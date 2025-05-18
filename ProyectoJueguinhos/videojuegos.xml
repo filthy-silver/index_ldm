@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE videojuegos SYSTEM "videojuegos.dtd">
+<videojuegos>
+    <videojuego anyo="2018">
+        <titulo>God of War</titulo>
+        <genero>Acción-Aventura</genero>
+        <imagenes>
+            <imagen>https://upload.wikimedia.org/wikipedia/en/a/a7/God_of_War_4_cover.jpg</imagen>
+            <imagen>https://i.ytimg.com/vi/K0u_kAWLJOA/maxresdefault.jpg</imagen>
+        </imagenes>
+        <descripcion>God of War es un videojuego de acción-aventura desarrollado por Santa Monica Studio y publicado por Sony Interactive Entertainment. Es la octava entrega de la saga God of War y sirve como secuela de God of War III.</descripcion>
+        <precio>59.99</precio>
+        <precioDescuento>39.99</precioDescuento>
+        <unidadesStock>45</unidadesStock>
+        <unidadesVendidas>350</unidadesVendidas>
+        <valorOpiniones>4.8</valorOpiniones>
+        <opiniones>
+            <opinion>
+                <autor>JuanGamer</autor>
+                <fecha>2018-05-10</fecha>
+                <nota>5</nota>
+                <texto>Una obra maestra que redefine la saga. La narración, el combate y los gráficos son espectaculares.</texto>
+            </opinion>
+            <opinion>
+                <autor>MariaGames</autor>
+                <fecha>2018-06-15</fecha>
+                <nota>4.5</nota>
+                <texto>Excelente juego con una historia emotiva y un combate satisfactorio. La cámara puede ser complicada en algunas situaciones.</texto>
+            </opinion>
+        </opiniones>
+    </videojuego>
+    
+    <videojuego anyo="2020">
+        <titulo>The Last of Us Part II</titulo>
+        <genero>Acción-Aventura</genero>
+        <imagenes>
+            <imagen>https://upload.wikimedia.org/wikipedia/en/4/4f/TLOU_P2_Box_Art_2.png</imagen>
+        </imagenes>
+        <descripcion>The Last of Us Part II es un videojuego de acción-aventura desarrollado por Naughty Dog y publicado por Sony Interactive Entertainment. La historia se sitúa cinco años después de los eventos del primer juego.</descripcion>
+        <precio>69.99</precio>
+        <precioDescuento>49.99</precioDescuento>
+        <unidadesStock>30</unidadesStock>
+        <unidadesVendidas>280</unidadesVendidas>
+        <valorOpiniones>4.5</valorOpiniones>
+        <opiniones>
+            <opinion>
+                <autor>CarlosReviewer</autor>
+                <fecha>2020-06-25</fecha>
+                <nota>5</nota>
+                <texto>Una obra maestra narrativa con mecánicas de juego pulidas y unos gráficos increíbles.</texto>
+            </opinion>
+            <opinion>
+                <autor>LauraGaming</autor>
+                <fecha>2020-07-10</fecha>
+                <nota>4</nota>
+                <texto>Historia emocionalmente intensa con excelente jugabilidad, aunque algunas decisiones narrativas son divisivas.</texto>
+            </opinion>
+        </opiniones>
+    </videojuego>
+    
+    <videojuego anyo="2015">
+        <titulo>The Witcher 3: Wild Hunt</titulo>
+        <genero>RPG</genero>
+        <imagenes>
+            <imagen>https://upload.wikimedia.org/wikipedia/en/0/0c/Witcher_3_cover_art.jpg</imagen>
+            <imagen>https://upload.wikimedia.org/wikipedia/en/c/c9/Cover_Art_of_The_Witcher_3_Wild_Hunt.jpg</imagen>
+        </imagenes>
+        <descripcion>The Witcher 3: Wild Hunt es un juego de rol de acción desarrollado por CD Projekt Red. Es la tercera entrega de la serie de videojuegos The Witcher, basada en la saga literaria del escritor polaco Andrzej Sapkowski.</descripcion>
+        <precio>39.99</precio>
+        <precioDescuento>19.99</precioDescuento>
+        <unidadesStock>25</unidadesStock>
+        <unidadesVendidas>500</unidadesVendidas>
+        <valorOpiniones>5</valorOpiniones>
+        <opiniones>
+            <opinion>
+                <autor>PedroRPG</autor>
+                <fecha>2015-06-02</fecha>
+                <nota>5</nota>
+                <texto>Posiblemente el mejor RPG de la década. Misiones secundarias con la calidad de principales y un mundo abierto lleno de vida.</texto>
+            </opinion>
+            <opinion>
+                <autor>SofiaGamer</autor>
+                <fecha>2015-07-20</fecha>
+                <nota>5</nota>
+                <texto>Un mundo inmenso con historias fascinantes y personajes memorables. Las expansiones son igual de impresionantes.</texto>
+            </opinion>
+        </opiniones>
+    </videojuego>
+    
+    <videojuego anyo="2022">
+        <titulo>Elden Ring</titulo>
+        <genero>RPG</genero>
+        <imagenes>
+            <imagen>https://upload.wikimedia.org/wikipedia/en/b/b9/Elden_Ring_Box_art.jpg</imagen>
+        </imagenes>
+        <descripcion>Elden Ring es un videojuego de rol de acción desarrollado por FromSoftware y publicado por Bandai Namco Entertainment. El juego es una colaboración creativa entre Hidetaka Miyazaki y el novelista George R. R. Martin.</descripcion>
+        <precio>59.99</precio>
+        <precioDescuento>49.99</precioDescuento>
+        <unidadesStock>60</unidadesStock>
+        <unidadesVendidas>420</unidadesVendidas>
+        <valorOpiniones>4.9</valorOpiniones>
+        <opiniones>
+            <opinion>
+                <autor>AlbertoSouls</autor>
+                <fecha>2022-03-10</fecha>
+                <nota>5</nota>
+                <texto>La evolución natural de la fórmula Souls en mundo abierto. Una experiencia desafiante pero increíblemente gratificante.</texto>
+            </opinion>
+            <opinion>
+                <autor>ElenaGamer</autor>
+                <fecha>2022-04-05</fecha>
+                <nota>4.8</nota>
+                <texto>Un mundo abierto lleno de misterios y desafíos. La exploración se siente recompensada constantemente.</texto>
+            </opinion>
+        </opiniones>
+    </videojuego>
+    
+    <videojuego anyo="2007">
+        <titulo>Team Fortress 2</titulo>
+        <genero>FPS</genero>
+        <imagenes>
+            <imagen>https://upload.wikimedia.org/wikipedia/en/5/5f/Tf2_standalonebox.jpg</imagen>
+        </imagenes>
+        <descripcion>Team Fortress 2 es un videojuego multijugador de disparos en primera persona desarrollado por Valve Corporation. Es la secuela de Team Fortress Classic y presenta nueve clases de personajes distintos.</descripcion>
+        <precio>0</precio>
+        <precioDescuento>0</precioDescuento>
+        <unidadesStock>100</unidadesStock>
+        <unidadesVendidas>10000</unidadesVendidas>
+        <valorOpiniones>4.2</valorOpiniones>
+        <opiniones>
+            <opinion>
+                <autor>RicardoFPS</autor>
+                <fecha>2010-03-15</fecha>
+                <nota>4.5</nota>
+                <texto>Un clásico que ha resistido bien el paso del tiempo. Su estilo artístico y diseño de clases lo mantienen fresco.</texto>
+            </opinion>
+            <opinion>
+                <autor>AntonioGamer</autor>
+                <fecha>2019-08-20</fecha>
+                <nota>3.5</nota>
+                <texto>Sigue siendo divertido, pero los problemas con bots y la falta de actualizaciones importantes lo han perjudicado.</texto>
+            </opinion>
+        </opiniones>
+    </videojuego>
+    
+    <videojuego anyo="2023">
+        <titulo>Starfield</titulo>
+        <genero>RPG</genero>
+        <imagenes>
+            <imagen>https://upload.wikimedia.org/wikipedia/en/5/53/Starfield_cover_art.jpg</imagen>
+            <imagen>https://upload.wikimedia.org/wikipedia/en/d/d4/Starfield_gameplay.jpg</imagen>
+        </imagenes>
+        <descripcion>Starfield es un juego de rol de ciencia ficción desarrollado por Bethesda Game Studios. El juego está ambientado en un universo espacial y permite a los jugadores explorar numerosos planetas y sistemas estelares.</descripcion>
+        <precio>69.99</precio>
+        <precioDescuento>59.99</precioDescuento>
+        <unidadesStock>75</unidadesStock>
+        <unidadesVendidas>150</unidadesVendidas>
+        <valorOpiniones>3.8</valorOpiniones>
+        <opiniones>
+            <opinion>
+                <autor>MartaEspacial</autor>
+                <fecha>2023-09-10</fecha>
+                <nota>4</nota>
+                <texto>Un juego ambicioso con un universo vasto para explorar, aunque tiene algunos problemas técnicos.</texto>
+            </opinion>
+            <opinion>
+                <autor>DavidRPG</autor>
+                <fecha>2023-10-05</fecha>
+                <nota>3.5</nota>
+                <texto>La exploración espacial es fascinante, pero la narrativa y las misiones pueden resultar repetitivas.</texto>
+            </opinion>
+        </opiniones>
+    </videojuego>
+    
+    <videojuego anyo="1996">
+        <titulo>Tomb Raider</titulo>
+        <genero>Acción-Aventura</genero>
+        <imagenes>
+            <imagen>https://upload.wikimedia.org/wikipedia/en/6/69/Tomb_Raider_%281996%29.png</imagen>
+        </imagenes>
+        <descripcion>Tomb Raider es un videojuego de acción-aventura desarrollado por Core Design y publicado por Eidos Interactive. El juego sigue a la arqueóloga Lara Croft mientras busca artefactos antiguos en diversas tumbas y ruinas.</descripcion>
+        <precio>9.99</precio>
+        <precioDescuento>4.99</precioDescuento>
+        <unidadesStock>10</unidadesStock>
+        <unidadesVendidas>200</unidadesVendidas>
+        <valorOpiniones>4.3</valorOpiniones>
+        <opiniones>
+            <opinion>
+                <autor>LuisRetro</autor>
+                <fecha>2010-01-15</fecha>
+                <nota>4</nota>
+                <texto>Un clásico que revolucionó los juegos de acción-aventura. Los controles han envejecido, pero la experiencia sigue siendo única.</texto>
+            </opinion>
+            <opinion>
+                <autor>ClaudiaGamer</autor>
+                <fecha>2019-05-20</fecha>
+                <nota>4.5</nota>
+                <texto>Un juego histórico que definió un género. A pesar de sus gráficos antiguos, la atmósfera y el diseño de niveles siguen siendo excelentes.</texto>
+            </opinion>
+        </opiniones>
+    </videojuego>
+    
+    <videojuego anyo="2023">
+        <titulo>Baldur's Gate 3</titulo>
+        <genero>RPG</genero>
+        <imagenes>
+            <imagen>https://upload.wikimedia.org/wikipedia/en/3/39/Baldur%27s_Gate_3_cover_art.jpg</imagen>
+            <imagen>https://upload.wikimedia.org/wikipedia/en/f/f9/Baldur%27s_Gate_3_gameplay.png</imagen>
+        </imagenes>
+        <descripcion>Baldur's Gate 3 es un juego de rol desarrollado por Larian Studios. Basado en el sistema de Dungeons &amp; Dragons, ofrece una rica experiencia narrativa con múltiples opciones de elección.</descripcion>
+        <precio>69.99</precio>
+        <precioDescuento>59.99</precioDescuento>
+        <unidadesStock>40</unidadesStock>
+        <unidadesVendidas>300</unidadesVendidas>
+        <valorOpiniones>4.9</valorOpiniones>
+        <opiniones>
+            <opinion>
+                <autor>RobertoDnD</autor>
+                <fecha>2023-08-15</fecha>
+                <nota>5</nota>
+                <texto>Una obra maestra del género RPG. Fiel a las reglas de D&amp;D y con una libertad de elección impresionante.</texto>
+            </opinion>
+            <opinion>
+                <autor>AnaDragon</autor>
+                <fecha>2023-09-10</fecha>
+                <nota>4.9</nota>
+                <texto>Posiblemente el mejor juego de rol de la última década. Las posibilidades son casi infinitas y cada decisión importa.</texto>
+            </opinion>
+        </opiniones>
+    </videojuego>
+    
+    <videojuego anyo="1999">
+        <titulo>Tony Hawk's Pro Skater</titulo>
+        <genero>Deportes</genero>
+        <imagenes>
+            <imagen>https://upload.wikimedia.org/wikipedia/en/1/16/Tony_Hawk%27s_Pro_Skater_cover.PNG</imagen>
+        </imagenes>
+        <descripcion>Tony Hawk's Pro Skater es un videojuego de skateboarding desarrollado por Neversoft y publicado por Activision. Presenta a Tony Hawk y otros skaters profesionales.</descripcion>
+        <precio>9.99</precio>
+        <precioDescuento>4.99</precioDescuento>
+        <unidadesStock>5</unidadesStock>
+        <unidadesVendidas>150</unidadesVendidas>
+        <valorOpiniones>4.7</valorOpiniones>
+        <opiniones>
+            <opinion>
+                <autor>JavierSkate</autor>
+                <fecha>2010-04-12</fecha>
+                <nota>5</nota>
+                <texto>Revolucionó los juegos de deportes extremos. La jugabilidad sigue siendo increíblemente divertida.</texto>
+            </opinion>
+            <opinion>
+                <autor>SaraGamer</autor>
+                <fecha>2015-06-20</fecha>
+                <nota>4.5</nota>
+                <texto>Un clásico que no ha envejecido. La banda sonora y el sistema de combos siguen siendo referentes en el género.</texto>
+            </opinion>
+        </opiniones>
+    </videojuego>
+    
+    <videojuego anyo="2019">
+        <titulo>Sekiro: Shadows Die Twice</titulo>
+        <genero>Acción-Aventura</genero>
+        <imagenes>
+            <imagen>https://image.api.playstation.com/vulcan/img/rnd/202010/2723/knxU5vUGA5bash6OvWGRPBNi.png</imagen>
+        </imagenes>
+        <descripcion>Sekiro: Shadows Die Twice es un videojuego de acción-aventura desarrollado por FromSoftware. Ambientado en el Japón del período Sengoku, el jugador controla a un shinobi conocido como Lobo.</descripcion>
+        <precio>49.99</precio>
+        <precioDescuento>29.99</precioDescuento>
+        <unidadesStock>20</unidadesStock>
+        <unidadesVendidas>250</unidadesVendidas>
+        <valorOpiniones>4.6</valorOpiniones>
+        <opiniones>
+            <opinion>
+                <autor>MiguelNinja</autor>
+                <fecha>2019-04-05</fecha>
+                <nota>4.5</nota>
+                <texto>Un sistema de combate exigente pero extremadamente satisfactorio. La ambientación feudal japonesa es sublime.</texto>
+            </opinion>
+            <opinion>
+                <autor>CristinaSamurai</autor>
+                <fecha>2019-05-12</fecha>
+                <nota>4.7</nota>
+                <texto>Difícil pero justo. El sistema de deflexión y postura reinventa el combate en los juegos de acción.</texto>
+            </opinion>
+        </opiniones>
+    </videojuego>
+</videojuegos>

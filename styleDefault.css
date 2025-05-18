@@ -1,0 +1,114 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #333;
+    margin: 0;
+    padding: 0;
+}
+h1 {
+    text-align: center;
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    color: #ffcc00;
+    text-transform: uppercase;
+    border-bottom: 2px solid #ffcc00;
+    padding-bottom: 10px;
+}
+.container {
+    display: flex;
+    height: 100vh;
+}
+.sidebar {
+    width: 250px;
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.ejercicio{
+    margin-bottom: 20px;
+}
+
+
+.sidebar_h1 {
+    text-align: left;
+    font-size: 1.1em;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ffcc00;
+    padding-bottom: 10px;
+}
+.sidebar_h2 {
+    font-style: italic;
+    text-align: left;
+    background-attachment: fixed;
+    font-size: 1em;
+    margin-bottom: 20px;
+}
+
+.sidebar ul li h1 {
+    display: block;
+    margin: 20px 0 10px;
+    font-size: 1.2em;
+    color: #848484;
+}
+
+.sidebar ul li a {
+    display: block;
+    color: #fff;
+    text-decoration: none;
+    margin-left: 20px;
+    background: #4d4d4d;
+    padding: 8px 10px;
+}
+
+.sidebar ul li a:hover {
+    color: #d6c890;
+    background-color: #333;
+   
+}
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+.sidebar ul li {
+    margin: 10px 0;
+}
+
+.content {
+    flex: 1;
+    padding: 20px;
+    box-sizing: border-box;
+}
+iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    box-shadow:#1111110e 0px 0px 10px;
+
+}
+
+/* Estilo Sobrescrito */
+body {
+    background-color: rgb(243 244 246);
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.text-center {
+    text-align: center;
+}
+
+h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+    font-weight: 700;
+    color: rgb(31 41 55);
+    margin-bottom: 1rem;
+}
+
+p {
+    color: rgb(75 85 99);
+}
+

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="videojuegos">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="videojuego" type="videojuegoType" minOccurs="1" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="videojuegoType">
+    <xs:sequence>
+      <xs:element name="titulo" type="xs:string" />
+      <xs:element name="genero" type="xs:string" />
+      <xs:element name="imagenes" type="imagenesType" />
+      <xs:element name="descripcion" type="xs:string" />
+      <xs:element name="precio" type="xs:decimal" />
+      <xs:element name="precioDescuento" type="xs:decimal" />
+      <xs:element name="unidadesStock" type="xs:nonNegativeInteger" />
+      <xs:element name="unidadesVendidas" type="xs:nonNegativeInteger" />
+      <xs:element name="valorOpiniones" type="valorOpinionesType" />
+      <xs:element name="opiniones" type="opinionesType" />
+    </xs:sequence>
+    <xs:attribute name="anyo" type="xs:gYear" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="imagenesType">
+    <xs:sequence>
+      <xs:element name="imagen" type="xs:anyURI" minOccurs="1" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:simpleType name="valorOpinionesType">
+    <xs:restriction base="xs:decimal">
+      <xs:minInclusive value="0" />
+      <xs:maxInclusive value="5" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="opinionesType">
+    <xs:sequence>
+      <xs:element name="opinion" type="opinionType" minOccurs="1" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="opinionType">
+    <xs:sequence>
+      <xs:element name="autor" type="xs:string" />
+      <xs:element name="fecha" type="xs:date" />
+      <xs:element name="nota" type="notaType" />
+      <xs:element name="texto" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:simpleType name="notaType">
+    <xs:restriction base="xs:decimal">
+      <xs:minInclusive value="0" />
+      <xs:maxInclusive value="5" />
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>

@@ -1,0 +1,174 @@
+/* === Estilos básicos === */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+/* === Estilos del sidebar === */
+.sidebar {
+    width: 250px;
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    box-sizing: border-box;
+    height: 100%; 
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #ffcc00 #333;
+}
+
+/* === Título principal === */
+h1 {
+    text-align: center;
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    color: #ffcc00;
+    text-transform: uppercase;
+    border-bottom: 2px solid #ffcc00;
+    padding-bottom: 10px;
+}
+
+/* === Estructura del menú === */
+.menu-container {
+    margin-top: 20px;
+}
+
+.menu-item {
+    margin-bottom: 15px;
+}
+
+.menu-content {
+    padding-left: 15px;
+    border-left: 1px solid #555;
+    display: none; /* Oculto por defecto */
+}
+
+/* === Títulos de trimestre === */
+.sidebar_h1 {
+    text-align: left;
+    font-size: 1.1em;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ffcc00;
+    padding-bottom: 10px;
+    cursor: pointer;
+    position: relative;
+    padding-left: 25px;
+}
+
+.flecha {
+    position: absolute;
+    left: 5px;
+    top: 2px;
+    transition: transform 0.3s;
+    font-size: 0.8em;
+    color: #ffcc00;
+}
+
+.sidebar_h1.active > .flecha {
+    transform: rotate(90deg);
+}
+
+/* === Subtítulos de ejercicios === */
+.submenu-item {
+    margin-bottom: 10px;
+}
+
+.sidebar_h2 {
+    font-style: italic;
+    text-align: left;
+    font-size: 1em;
+    margin-bottom: 10px;
+    color: #fff;
+}
+
+.sidebar_h2.desplegable {
+    cursor: pointer;
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 5px;
+    transition: all 0.2s;
+}
+
+.flecha-sub {
+    position: absolute;
+    left: 0;
+    top: 2px;
+    transition: transform 0.3s;
+    font-size: 0.7em;
+    color: #ffcc00;
+}
+
+.sidebar_h2.desplegable.active > .flecha-sub {
+    transform: rotate(90deg);
+}
+
+/* === Listas de ejercicios === */
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin: 10px 0;
+}
+
+.ejercicio {
+    margin-bottom: 15px;
+    padding-left: 10px;
+    border-left: 1px solid #444;
+    display: none; /* Oculto por defecto */
+}
+
+/* === Enlaces del menú === */
+.sidebar ul li a {
+    display: block;
+    color: #fff;
+    text-decoration: none;
+    margin-left: 20px;
+    background: #4d4d4d;
+    padding: 8px 10px;
+    border-radius: 3px;
+    transition: all 0.2s;
+}
+
+.sidebar ul li a:hover {
+    color: #d6c890;
+    background-color: #333;
+}
+
+/* === Contenido principal e iframe === */
+.content {
+    flex: 1;
+    padding: 20px;
+    box-sizing: border-box;
+    height: 100vh;
+    overflow: hidden;
+}
+
+iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    box-shadow: #1111110e 0px 0px 10px;
+}
+
+/* === Estilos del scrollbar === */
+.sidebar::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: #333;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background-color: #ffcc00;
+    border-radius: 4px;
+}

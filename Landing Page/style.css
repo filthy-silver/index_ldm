@@ -1,0 +1,135 @@
+body{
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    font-family: Arial, sans-serif;
+    width: 90%;
+    max-width: 1200px;
+    min-height: 100vh;
+    margin: 0 auto;
+}
+
+header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+    padding: 20px;
+    background-color: #5c496c;
+    color: #fff;
+    text-align: center;
+}
+
+header nav{
+    display: flex;
+    gap: 20px;
+    flex-direction: row;
+    justify-content: right;
+    text-align: center;
+    max-width: 100%;
+    width: 100%;
+}
+
+main{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: space-around;
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 1%;
+}
+
+main img {
+    flex: 1;
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+    object-fit: cover;  
+}
+
+section{
+    flex: 1;
+    max-width: 100%;
+}
+
+button {
+    color:#fff;
+    align-items: center;
+    background-color: #5c496c;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: .25rem;
+    box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-block;
+    font-family: system-ui,-apple-system,system-ui,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    justify-content: center;
+    line-height: 1.25;
+    margin: 0;
+    min-height: 3rem;
+    padding: calc(.875rem - 1px) calc(1.5rem - 1px);
+    position: relative;
+    text-decoration: none;
+    transition: all 250ms;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: baseline;
+    width: auto;
+}
+
+button:hover,
+button:focus {
+  border-color: rgba(0, 0, 0, 0.15);
+  box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+button:active {
+  background-color: #4d4356;
+  border-color: rgba(0, 0, 0, 0.15);
+  box-shadow: rgba(0, 0, 0, 0.06) 0 2px 4px;
+  color: rgba(0, 0, 0, 0.65);
+  transform: translateY(0);
+}
+
+a {
+    display: inline-flex;
+    justify-content: center;
+    color: #fff;
+    text-decoration: none;
+    padding: 3%;
+}
+
+a:hover {
+    color: rgba(255, 255, 255, 0.45);
+    transition: all 250ms;
+    
+}
+
+@media (max-width: 768px) {
+
+    main{
+        flex-direction: column;
+    }
+
+    header{
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    header nav{
+        justify-content: center;
+    }
+    
+}

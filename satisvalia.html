@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credenciales Satisvalia</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .credentials-container {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 400px; 
+            margin: 40px auto;
+        }
+
+        .credentials {
+            background: #4d4d4d;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+            display: flex;          
+            justify-content: space-between;  
+            align-items: center; 
+        }
+
+        .credentials span {
+        margin-right: 10px;  
+        }
+
+        .copy-btn {
+            padding: 8px 10px;
+            background: #ffcc00;
+            color: #333;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.8em;
+            margin-left: auto;
+        }
+
+        .copy-btn:hover {
+            background: #d6c890;
+        }
+
+        .open-btn {
+            padding: 10px 20px;
+            background: #ffcc00;
+            color: #333;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 20px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .open-btn:hover {
+            background: #d6c890;
+        }
+
+        h2 {
+            color: #ffcc00;
+            text-transform: uppercase;
+            border-bottom: 2px solid #ffcc00;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="credentials-container">
+        <h2>Credenciales CDMon</h2>
+        <p>Para acceder al sitio, utiliza las siguientes credenciales:</p>
+        <div class="credentials">
+            Usuario: <span id="username">alecso585</span>
+            <button class="copy-btn" onclick="copyText('username')">Copiar</button>
+        </div>
+        <div class="credentials">
+            Contraseña: <span id="password">9JHQrwg6</span>
+            <button class="copy-btn" onclick="copyText('password')">Copiar</button>
+        </div>
+        <button class="open-btn" onclick="openWebsite()">Abrir web en pestaña</button>
+    </div>
+    <script>
+    function copyText(elementId) {
+    const text = document.getElementById(elementId).innerText;
+    const button = event.target;
+    const originalText = button.innerText;
+
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+
+    try {
+        document.execCommand('copy');
+        button.innerText = "¡Copiado!";
+    } catch (err) {
+        console.error('Error al copiar:', err);
+        button.innerText = "Error";
+    }
+
+    document.body.removeChild(textarea);
+    
+    setTimeout(() => {
+        button.innerText = originalText;
+    }, 1000);
+}
+    
+        function openWebsite() {
+            window.open('http://www.alecs.com.mialias.net/', '_blank');
+        }
+    </script>
+</body>
+</html>
