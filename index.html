@@ -44,15 +44,6 @@
 
             <h1><a href="index.html" style="color: #ffcc00; text-decoration: none;">Lenguajes de Marcas</a></h1>
             
-            <!-- Añadir sección de marcadores/favoritos -->
-            <div class="bookmarks-section">
-                <div class="sidebar_h1 bookmarks-title">
-                    <i class="fas fa-bookmark"></i> Mis Marcadores
-                    <span class="bookmarks-count">(0)</span>
-                </div>
-                <div class="bookmarks-list"></div>
-            </div>
-            
             <div class="menu-container">
                 <!-- Trimestre 1 -->
                 <div class="menu-item">
@@ -823,122 +814,6 @@ body.dark-mode .dark-mode-toggle {
     background: rgba(255, 204, 0, 0.4);
 }
 
-/* Estilos para los marcadores */
-.bookmarks-section {
-    margin-bottom: 20px;
-    overflow: hidden;
-}
-
-.bookmarks-title {
-    cursor: pointer;
-    padding-left: 10px !important;
-    display: flex;
-    align-items: center;
-    font-size: 1rem !important;
-    margin-bottom: 5px !important;
-}
-
-.bookmarks-title i {
-    margin-right: 8px;
-    color: #ffcc00;
-}
-
-.bookmarks-count {
-    margin-left: 5px;
-    font-size: 12px;
-    color: #aaa;
-}
-
-.bookmarks-list {
-    padding-left: 10px;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
-}
-
-.bookmarks-list.active {
-    max-height: 300px;
-    overflow-y: auto;
-    margin-top: 5px;
-    margin-bottom: 10px;
-}
-
-.bookmark-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 10px;
-    background-color: #2a2a2a;
-    border-radius: 5px;
-    margin-bottom: 5px;
-    transition: all 0.2s;
-}
-
-.bookmark-item:hover {
-    background-color: #444;
-    transform: translateX(5px);
-}
-
-.bookmark-title {
-    color: #fff;
-    font-size: 14px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 180px;
-}
-
-.bookmark-actions {
-    display: flex;
-    gap: 5px;
-}
-
-.bookmark-item button {
-    background: none;
-    border: none;
-    color: #ffcc00;
-    cursor: pointer;
-    font-size: 12px;
-    transition: all 0.2s;
-    padding: 5px;
-    border-radius: 3px;
-}
-
-.bookmark-item button:hover {
-    color: #fff;
-    background-color: rgba(255, 204, 0, 0.3);
-}
-
-.bookmark-empty {
-    padding: 10px;
-    color: #aaa;
-    font-style: italic;
-    text-align: center;
-    font-size: 12px;
-}
-
-@keyframes pulse-bookmark {
-    0% { opacity: 0.7; }
-    50% { opacity: 1; }
-    100% { opacity: 0.7; }
-}
-
-body:not(.dark-mode) .bookmark-item {
-    background-color: #f0f0f0;
-}
-
-body:not(.dark-mode) .bookmark-title {
-    color: #333;
-}
-
-body:not(.dark-mode) .bookmark-item:hover {
-    background-color: #e0e0e0;
-}
-
-body:not(.dark-mode) .bookmark-empty {
-    color: #777;
-}
-
 /* Notificaciones mejoradas */
 .notification {
     position: fixed;
@@ -1346,17 +1221,7 @@ window.performSearch = function() {
                 searchOverlay.style.display = 'none';
             });
             
-            const bookmarkBtn = document.createElement('button');
-            bookmarkBtn.innerHTML = '<i class="fas fa-bookmark"></i> Guardar';
-            bookmarkBtn.addEventListener('click', function() {
-                if (typeof window.addToBookmarks === 'function') {
-                    window.addToBookmarks(result.title, result.href, result.trimestre, result.tipo);
-                }
-                searchOverlay.style.display = 'none';
-            });
-            
             resultActions.appendChild(openBtn);
-            resultActions.appendChild(bookmarkBtn);
             
             resultDetails.appendChild(resultTitle);
             resultDetails.appendChild(resultPath);
