@@ -5,11 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lenguajes de Marcas</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
 </head>
-<body>
+<body class="dark-mode"> <!-- Initial class, JS will add/remove cursor-enabled -->
+    <!-- Botón de modo oscuro fuera del chatbot -->
+    <button id="global-darkmode-toggle" class="dark-mode-toggle" title="Modo oscuro">
+        <i class="fas fa-sun"></i> <!-- Cambiado porque por defecto inicia en modo oscuro -->
+    </button>
     <div class="container">
         <div class="sidebar">
+            <!-- Añadir barra de búsqueda y filtros en la parte superior del sidebar -->
+            <div class="sidebar-search">
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="Buscar ejercicios...">
+                    <button id="search-button">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <div class="search-filters">
+                    <select id="filter-trimestre">
+                        <option value="all">Todos</option>
+                        <option value="1">Trimestre 1</option>
+                        <option value="2">Trimestre 2</option>
+                        <option value="3">Trimestre 3</option>
+                    </select>
+                    <select id="filter-tipo">
+                        <option value="all">Todos los tipos</option>
+                        <option value="css">CSS</option>
+                        <option value="flexbox">FlexBox</option>
+                        <option value="form">Formularios</option>
+                        <option value="table">Tablas</option>
+                        <option value="xml">XML/DTD/XSD</option>
+                    </select>
+                </div>
+                <div id="search-results" class="search-results"></div>
+            </div>
+
             <h1><a href="index.html" style="color: #ffcc00; text-decoration: none;">Lenguajes de Marcas</a></h1>
+            
+            <!-- Añadir sección de marcadores/favoritos -->
+            <div class="bookmarks-section">
+                <div class="sidebar_h1 bookmarks-title">
+                    <i class="fas fa-bookmark"></i> Mis Marcadores
+                    <span class="bookmarks-count">(0)</span>
+                </div>
+                <div class="bookmarks-list"></div>
+            </div>
             
             <div class="menu-container">
                 <!-- Trimestre 1 -->
@@ -95,14 +137,21 @@
                             <ul class="ejercicio">
                                 <li><a href="pdf\validacionXML" target="contentFrame">Validacion XML Diapositivas</a></li>
                                 <li><a href="pdf\CreaXMLdesdeDTD.pdf" target="contentFrame">Crear XML desde DTD</a></li>
+                                <li><a href="pdf\EjerciciosDTD_libro.pdf" target="contentFrame">Ejercicios del Libro</a></li>
+                                <li><a href="pdf\Libro_a_XSD_DTD.pdf" target="contentFrame">Ej. Libro a XSD y DTD</a></li>
+                                <li><a href="RA4/Ejercicios Libro.html" target="contentFrame">Ejercicios del Libro 2</a></li>
+                                <li><a href="RA4/DTDs_sin_Atributos.html" target="contentFrame">DTDs sin Atributos</a></li>                                <li><a href="RA4/Ejercicios Libro.html" target="contentFrame">Ejercicios del Libro 2</a></li>
+                                <li><a href="RA4/DTDs_con_Atributos.html" target="contentFrame">DTDs con Atributos</a></li>
+                                <li><a href="RA4/Validar_con_XSDs.html" target="contentFrame">Validar con XSDs</a></li>
+                                <li><a href="RA4/Ejercicios_XML_ppt.html" target="contentFrame">Ejercicios XML Presentacion</a></li>
                             </ul>
                         </div>
                         
-                        <!-- Sistemas de Gestión Empresarial -->
+                        <!-- RA5 XSL, XSLT -->
                         <div class="submenu-item">
-                            <div class="sidebar_h2 desplegable">Sistemas de Gestión Empresarial</div>
+                            <div class="sidebar_h2 desplegable">XSL, XSLTs, XPath</div>
                             <ul class="ejercicio">
-                                <li><a href="\pdf\EjerciciosSaaS.pdf" target="contentFrame">Ejercicios SaaS</a></li>
+                                <li><a href="RA5/" target="contentFrame">Ejercicios SaaS</a></li>
                             </ul>
                         </div>
                     </div>
@@ -178,5 +227,1505 @@
             });
         });
     </script>
-</body>
-</html>
+
+    <script>
+        // Modo oscuro global
+        document.addEventListener('DOMContentLoaded', function() {
+            const darkModeBtn = document.getElementById('global-darkmode-toggle');
+            const darkModeIcon = darkModeBtn.querySelector('i');
+            
+            // Por defecto, modo oscuro activado si no hay preferencia
+            if (localStorage.getItem('darkMode') === null) {
+                document.body.classList.add('dark-mode');
+                darkModeIcon.classList.remove('fa-moon');
+                darkModeIcon.classList.add('fa-sun');
+                localStorage.setItem('darkMode', 'true');
+            } else if (localStorage.getItem('darkMode') === 'true') {
+                document.body.classList.add('dark-mode');
+                darkModeIcon.classList.remove('fa-moon');
+                darkModeIcon.classList.add('fa-sun');
+            } else {
+                document.body.classList.remove('dark-mode');
+                darkModeIcon.classList.remove('fa-sun');
+                darkModeIcon.classList.add('fa-moon');
+            }
+            
+            darkModeBtn.addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+                const isDark = document.body.classList.contains('dark-mode');
+                localStorage.setItem('darkMode', isDark);
+                if (isDark) {
+                    darkModeIcon.classList.remove('fa-moon');
+                    darkModeIcon.classList.add('fa-sun');
+                } else {
+                    darkModeIcon.classList.remove('fa-sun');
+                    darkModeIcon.classList.add('fa-moon');
+                }
+                
+                // Sincronizar modo oscuro con el iframe
+                try {
+                    const iframe = document.querySelector('.content iframe');
+                    if (iframe && iframe.contentWindow) {
+                        iframe.contentWindow.postMessage({
+                            type: 'toggleDarkMode',
+                            darkMode: isDark
+                        }, '*');
+                    }
+                } catch (e) {
+                    console.error("Error al comunicarse con el iframe:", e);
+                }
+            });
+            
+            // Al cargar, sincronizar el iframe con el estado actual
+            setTimeout(function() {
+                try {
+                    const iframe = document.querySelector('.content iframe');
+                    if (iframe && iframe.contentWindow) {
+                        iframe.contentWindow.postMessage({
+                            type: 'toggleDarkMode',
+                            darkMode: document.body.classList.contains('dark-mode')
+                        }, '*');
+                    }
+                } catch (e) {}
+            }, 500);
+        });
+    </script>
+    <!-- 1. PROBLEMA: Aquí se está cargando el script una primera vez, muy temprano en el documento -->
+<!-- <script src="js/chatbot.js"></script> -->
+
+<!-- Comentar los módulos hasta que estén listos 
+<script src="js/chatbot-data.js"></script>
+<script src="js/chatbot-logic.js"></script>
+<script src="js/chatbot-ui.js"></script>
+<script src="js/chatbot-init.js"></script>
+-->
+
+<!-- Chatbot HTML - Estructura básica -->
+<div class="chatbot-container" id="chatbot-container">
+    <div class="chatbot-header">
+        <div class="chatbot-title">
+            <i class="fas fa-robot"></i> Asistente del Curso
+        </div>
+        <div class="chatbot-controls">
+            <button class="chatbot-resize" id="chatbot-resize" title="Ampliar tamaño">
+                <i class="fas fa-expand-alt"></i>
+            </button>
+            <button class="chatbot-settings" id="chatbot-settings" title="Configuración">
+                <i class="fas fa-cog"></i>
+            </button>
+            <button class="chatbot-toggle" id="chatbot-toggle" title="Cerrar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+    <div class="chatbot-body">
+        <div class="chatbot-messages" id="chatbot-messages">
+            <div class="message bot-message">
+                ¡Hola! Soy el asistente del curso de Lenguajes de Marcas. ¿En qué puedo ayudarte?
+            </div>
+        </div>
+        
+        <div class="chatbot-suggestions" id="chatbot-suggestions">
+            <!-- Las sugerencias se generarán dinámicamente -->
+        </div>
+        
+        <div class="chatbot-input">
+            <input type="text" id="chatbot-input-field" placeholder="Escribe tu pregunta aquí..." />
+            <button id="chatbot-send-btn">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<button class="chatbot-button" id="chatbot-button">
+    <i class="fas fa-comment-dots"></i>
+</button>
+
+<!-- Importante: NO INCLUIR SCRIPTS INLINE para el chatbot aquí -->
+<!-- Eliminar cualquier script como document.getElementById('chatbot-send-btn').addEventListener('click', sendMessage) -->
+
+<!-- El resto de estilos pueden permanecer iguales -->
+<style>
+.chatbot-button {
+    position: fixed;
+    bottom: 30px;
+    right: 90px; /* Alejado de la esquina */
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #ffcc00;
+    color: #333;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 1000;
+    font-size: 24px;
+    transition: all 0.3s;
+}
+
+/* Estilos actualizados para el chatbot movible */
+.chatbot-container {
+    position: fixed;
+    bottom: 90px;
+    right: 90px; /* Alejado de la esquina */
+    width: 350px;
+    height: 450px;
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 1000;
+    /* Separamos las transiciones para evitar problemas con transform/position */
+    transition: box-shadow 0.3s, border-color 0.3s, background-color 0.3s, color 0.3s, width 0.3s, height 0.3s;
+}
+
+/* Asegurar que las clases de tamaño se apliquen correctamente */
+.chatbot-container {
+    /* ...existing code... */
+    transition: box-shadow 0.3s, border-color 0.3s, background-color 0.3s, color 0.3s, width 0.3s, height 0.3s;
+}
+
+/* Definir claramente el tamaño normal y grande */
+.chatbot-container {
+    width: 350px;
+    height: 450px;
+}
+
+.chatbot-large {
+    width: 450px !important;
+    height: 550px !important;
+}
+
+/* Evitar transiciones durante el arrastre */
+.chatbot-container.chatbot-dragging {
+    transition: none !important;
+}
+
+.chatbot-header {
+    background-color: #ffcc00;
+    color: #333;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    user-select: none; /* Prevenir selección de texto durante el arrastre */
+}
+
+/* Estilos para el botón de resetear posición */
+.reset-position-button {
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.reset-position-button:hover {
+    background-color: #0d8bf2;
+}
+
+.reset-position-button i {
+    margin-right: 5px;
+}
+
+body.dark-mode .reset-position-button {
+    background-color: #1976D2;
+}
+
+body.dark-mode .reset-position-button:hover {
+    background-color: #0d6efd;
+}
+
+.chatbot-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.chatbot-darkmode,
+.chatbot-toggle {
+    background: none;
+    border: none;
+    color: #333;
+    cursor: pointer;
+    font-size: 14px;
+    transition: transform 0.3s;
+}
+
+.chatbot-darkmode:hover,
+.chatbot-toggle:hover {
+    transform: scale(1.2);
+}
+
+.chatbot-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    background-color: #f5f5f5;
+    overflow: hidden;
+}
+
+.chatbot-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    scrollbar-width: thin;
+    scrollbar-color: #ffcc00 #333;
+}
+
+/* Scrollbar styling for chatbot messages to match sidebar */
+.chatbot-messages::-webkit-scrollbar {
+    width: 4px;
+}
+
+.chatbot-messages::-webkit-scrollbar-track {
+    background: #333;
+}
+
+.chatbot-messages::-webkit-scrollbar-thumb {
+    background-color: #ffcc00;
+    border-radius: 4px;
+}
+
+/* Dark mode scrollbar adjustments */
+body.dark-mode .chatbot-messages::-webkit-scrollbar-track {
+    background: #222;
+}
+
+body.dark-mode .chatbot-messages {
+    scrollbar-color: #e6b800 #222;
+}
+
+.message {
+    max-width: 80%;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    border-radius: 15px;
+    animation: fadeIn 0.3s;
+    word-wrap: break-word;
+}
+
+.bot-message {
+    align-self: flex-start;
+    background-color: #e0e0e0;
+    border-bottom-left-radius: 5px;
+}
+
+.user-message {
+    align-self: flex-end;
+    background-color: #ffcc00;
+    color: #333;
+    border-bottom-right-radius: 5px;
+}
+
+.chatbot-input {
+    display: flex;
+    padding: 10px;
+    background-color: #fff;
+    border-top: 1px solid #e0e0e0;
+}
+
+.chatbot-input input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px 0 0 20px;
+    outline: none;
+    font-size: 14px;
+}
+
+.chatbot-input input:focus {
+    border-color: #ffcc00;
+}
+
+.chatbot-input button {
+    width: 40px;
+    height: 40px;
+    margin-left: 10px;
+    background-color: #ffcc00;
+    color: #333;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chatbot-input button:hover {
+    background-color: #e6b800;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Modo oscuro para el chatbot */
+body.dark-mode .chatbot-container {
+    background-color: #333;
+    border-color: #e6b800;
+}
+
+body.dark-mode .chatbot-header {
+    background-color: #e6b800;
+}
+
+body.dark-mode .chatbot-body {
+    background-color: #444;
+}
+
+body.dark-mode .chatbot-input {
+    background-color: #333;
+    border-top-color: #555;
+}
+
+body.dark-mode .chatbot-input input {
+    background-color: #444;
+    color: #fff;
+    border-color: #555;
+}
+
+body.dark-mode .bot-message {
+    background-color: #555;
+    color: #fff;
+}
+
+body.dark-mode .user-message {
+    background-color: #e6b800;
+    color: #333;
+}
+
+/* Indicador de escritura */
+.typing-indicator {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #e0e0e0;
+    border-radius: 15px;
+    border-bottom-left-radius: 5px;
+    margin-bottom: 10px;
+    animation: fadeIn 0.3s;
+}
+
+.typing-indicator span {
+    height: 8px;
+    width: 8px;
+    float: left;
+    margin: 0 1px;
+    background-color: #9E9EA1;
+    display: block;
+    border-radius: 50%;
+    opacity: 0.4;
+}
+
+.typing-indicator span:nth-of-type(1) {
+    animation: typing 1s infinite;
+}
+
+.typing-indicator span:nth-of-type(2) {
+    animation: typing 1s 0.33s infinite;
+}
+
+.typing-indicator span:nth-of-type(3) {
+    animation: typing 1s 0.66s infinite;
+}
+
+@keyframes typing {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
+    100% { transform: translateY(0px); }
+}
+
+body.dark-mode .typing-indicator {
+    background-color: #555;
+}
+
+body.dark-mode .typing-indicator span {
+    background-color: #ccc;
+}
+
+.dark-mode-toggle {
+    position: fixed;
+    top: 30px;
+    right: 90px; /* Alejado de la esquina */
+    background: rgba(34,34,34,0.85);
+    border: none;
+    color: #ffcc00;
+    font-size: 1.8rem; /* Tamaño reducido */
+    cursor: pointer;
+    transition: transform 0.3s, background 0.3s;
+    z-index: 2000;
+    border-radius: 50%;
+    width: 48px; /* Tamaño reducido */
+    height: 48px; /* Tamaño reducido */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+}
+.dark-mode-toggle:hover {
+    transform: rotate(30deg) scale(1.1);
+    background: #222;
+}
+body.dark-mode .dark-mode-toggle {
+    color: #e6b800;
+    background: rgba(51,51,51,0.95);
+}
+
+/* Estilos para la barra de búsqueda */
+.sidebar-search {
+    padding: 15px 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #444;
+}
+
+.search-container {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+#search-input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 2px solid #444;
+    border-radius: 20px 0 0 20px;
+    background-color: #333;
+    color: #fff;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.3s;
+}
+
+#search-input:focus {
+    border-color: #ffcc00;
+}
+
+#search-button {
+    background-color: #ffcc00;
+    color: #333;
+    border: none;
+    border-radius: 0 20px 20px 0;
+    padding: 0 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+#search-button:hover {
+    background-color: #e6b800;
+}
+
+.search-filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.search-filters select {
+    flex: 1;
+    padding: 6px 10px;
+    border: 1px solid #444;
+    border-radius: 5px;
+    background-color: #333;
+    color: #fff;
+    font-size: 12px;
+    outline: none;
+}
+
+.search-filters select:focus {
+    border-color: #ffcc00;
+}
+
+.search-results {
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.3s;
+    background-color: #2a2a2a;
+    border-radius: 5px;
+}
+
+.search-results.active {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #444;
+}
+
+.search-result-item {
+    padding: 8px 10px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.search-result-item:hover {
+    background-color: #444;
+}
+
+.search-result-item .result-title {
+    font-size: 14px;
+    color: #fff;
+}
+
+.search-result-item .result-path {
+    font-size: 11px;
+    color: #aaa;
+    margin-top: 2px;
+}
+
+.search-result-item .result-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 5px;
+}
+
+.search-result-item .result-actions button {
+    background: rgba(255, 204, 0, 0.2);
+    border: 1px solid rgba(255, 204, 0, 0.3);
+    color: #ffcc00;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+}
+
+.search-result-item .result-actions button i {
+    margin-right: 5px;
+}
+
+.search-result-item .result-actions button:hover {
+    background: rgba(255, 204, 0, 0.4);
+}
+
+/* Estilos para los marcadores */
+.bookmarks-section {
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.bookmarks-title {
+    cursor: pointer;
+    padding-left: 10px !important;
+    display: flex;
+    align-items: center;
+    font-size: 1rem !important;
+    margin-bottom: 5px !important;
+}
+
+.bookmarks-title i {
+    margin-right: 8px;
+    color: #ffcc00;
+}
+
+.bookmarks-count {
+    margin-left: 5px;
+    font-size: 12px;
+    color: #aaa;
+}
+
+.bookmarks-list {
+    padding-left: 10px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.bookmarks-list.active {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+.bookmark-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    background-color: #2a2a2a;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    transition: all 0.2s;
+}
+
+.bookmark-item:hover {
+    background-color: #444;
+    transform: translateX(5px);
+}
+
+.bookmark-title {
+    color: #fff;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+}
+
+.bookmark-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.bookmark-item button {
+    background: none;
+    border: none;
+    color: #ffcc00;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s;
+    padding: 5px;
+    border-radius: 3px;
+}
+
+.bookmark-item button:hover {
+    color: #fff;
+    background-color: rgba(255, 204, 0, 0.3);
+}
+
+.bookmark-empty {
+    padding: 10px;
+    color: #aaa;
+    font-style: italic;
+    text-align: center;
+    font-size: 12px;
+}
+
+@keyframes pulse-bookmark {
+    0% { opacity: 0.7; }
+    50% { opacity: 1; }
+    100% { opacity: 0.7; }
+}
+
+body:not(.dark-mode) .bookmark-item {
+    background-color: #f0f0f0;
+}
+
+body:not(.dark-mode) .bookmark-title {
+    color: #333;
+}
+
+body:not(.dark-mode) .bookmark-item:hover {
+    background-color: #e0e0e0;
+}
+
+body:not(.dark-mode) .bookmark-empty {
+    color: #777;
+}
+
+/* Notificaciones mejoradas */
+.notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #333;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.notification.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.notification i {
+    margin-right: 8px;
+    font-size: 16px;
+}
+
+.notification-success {
+    background-color: #4CAF50;
+}
+
+.notification-info {
+    background-color: #2196F3;
+}
+
+.notification-warning {
+    background-color: #FF9800;
+}
+
+.notification-error {
+    background-color: #F44336;
+}
+</style>
+
+<!-- Hacer que la función de búsqueda esté disponible globalmente para el chatbot y notifique resultados -->
+<script>
+window.performSearch = function() {
+    console.log("Ejecutando búsqueda global");
+    const searchInput = document.getElementById('search-input');
+    const searchOverlay = document.getElementById('search-overlay');
+    const searchResultsContent = document.getElementById('search-results-content');
+    const closeButton = document.getElementById('search-modal-close');
+    
+    // Verificar que existan todos los elementos necesarios
+    if (!searchInput || !searchOverlay || !searchResultsContent || !closeButton) {
+        console.error("Faltan elementos críticos para la búsqueda");
+        return;
+    }
+    
+    // Limpiar resultados anteriores
+    searchResultsContent.innerHTML = '';
+    
+    // Obtener valor de búsqueda
+    const searchTerm = searchInput.value.trim().toLowerCase();
+    
+    if (searchTerm.length < 2) {
+        console.log("Término de búsqueda demasiado corto");
+        return;
+    }
+    
+    // Filtros actuales
+    const trimestreFilter = document.getElementById('filter-trimestre')?.value || 'all';
+    const tipoFilter = document.getElementById('filter-tipo')?.value || 'all';
+    
+    // Buscar en todos los enlaces del menú
+    let results = [];
+    document.querySelectorAll('.menu-item a').forEach(link => {
+        const title = link.textContent.trim();
+        const href = link.getAttribute('href');
+        const trimestre = detectTrimestre(link);
+        const tipo = detectTipo(link);
+        
+        // Verificar si coincide con los filtros
+        const matchesTrimestre = trimestreFilter === 'all' || trimestre === trimestreFilter;
+        const matchesTipo = tipoFilter === 'all' || tipo === tipoFilter;
+        
+        // Verificar si coincide con el término de búsqueda
+        const matchesSearch = title.toLowerCase().includes(searchTerm) || 
+                             href.toLowerCase().includes(searchTerm);
+        
+        if (matchesSearch && matchesTrimestre && matchesTipo) {
+            results.push({
+                title,
+                href,
+                trimestre,
+                tipo,
+                element: link
+            });
+        }
+    });
+    
+    // Guardar resultados para el chatbot
+    window.lastSearchResults = {
+        term: searchTerm,
+        count: results.length,
+        items: results.map(r => r.title)
+    };
+    
+    // Mostrar resultados en el modal
+    if (results.length > 0) {
+        results.forEach(result => {
+            const resultItem = document.createElement('div');
+            resultItem.className = 'search-result-item';
+            
+            const resultInfo = document.createElement('div');
+            resultInfo.className = 'result-info';
+            
+            const resultTitle = document.createElement('div');
+            resultTitle.className = 'result-title';
+            resultTitle.textContent = result.title;
+            
+            const resultPath = document.createElement('div');
+            resultPath.className = 'result-path';
+            resultPath.textContent = `Trimestre ${result.trimestre} › ${result.tipo}`;
+            
+            resultInfo.appendChild(resultTitle);
+            resultInfo.appendChild(resultPath);
+            
+            const resultActions = document.createElement('div');
+            resultActions.className = 'result-actions';
+            
+            // Botón para abrir
+            const openButton = document.createElement('button');
+            openButton.innerHTML = '<i class="fas fa-external-link-alt"></i> Abrir';
+            openButton.title = 'Abrir ejercicio';
+            openButton.addEventListener('click', () => {
+                document.querySelector('iframe[name="contentFrame"]').src = result.href;
+                searchOverlay.style.display = 'none';
+            });
+            
+            // Botón para añadir a marcadores
+            const bookmarkButton = document.createElement('button');
+            bookmarkButton.innerHTML = '<i class="fas fa-bookmark"></i> Guardar';
+            bookmarkButton.title = 'Añadir a marcadores';
+            bookmarkButton.addEventListener('click', () => {
+                if (typeof addToBookmarks === 'function') {
+                    addToBookmarks(result.title, result.href, result.trimestre, result.tipo);
+                }
+            });
+            
+            resultActions.appendChild(openButton);
+            resultActions.appendChild(bookmarkButton);
+            
+            resultItem.appendChild(resultInfo);
+            resultItem.appendChild(resultActions);
+            
+            searchResultsContent.appendChild(resultItem);
+        });
+    } else {
+        // Sin resultados
+        const noResults = document.createElement('div');
+        noResults.className = 'search-no-results';
+        noResults.innerHTML = '<i class="fas fa-search"></i> No se encontraron resultados para "<strong>' + searchTerm + '</strong>"';
+        searchResultsContent.appendChild(noResults);
+    }
+    
+    // Mostrar el overlay con animación
+    searchOverlay.style.display = 'flex';
+    
+    // Asegurar que el botón de cierre funcione correctamente
+    closeButton.addEventListener('click', function() {
+        searchOverlay.style.display = 'none';
+    });
+    
+    // Disparar evento para notificar resultados al chatbot
+    setTimeout(() => {
+        document.dispatchEvent(new CustomEvent('searchResult', { 
+            detail: { 
+                type: 'searchCompleted',
+                results: window.lastSearchResults
+            }
+        }));
+    }, 100);
+    
+    // Funciones auxiliares para detectar el trimestre y tipo
+    function detectTrimestre(linkElement) {
+        // Buscar hacia arriba en el DOM hasta encontrar el trimestre
+        let current = linkElement;
+        while (current && !current.classList.contains('menu-item')) {
+            current = current.parentElement;
+        }
+        
+        if (current) {
+            const trimestreHeader = current.querySelector('.sidebar_h1');
+            if (trimestreHeader) {
+                const text = trimestreHeader.textContent.toLowerCase();
+                if (text.includes('trimestre 1')) return '1';
+                if (text.includes('trimestre 2')) return '2';
+                if (text.includes('trimestre 3')) return '3';
+            }
+        }
+        
+        // Intentar detectar por URL
+        const href = linkElement.getAttribute('href').toLowerCase();
+        if (href.includes('trimestre1') || href.includes('trimestre 1')) return '1';
+        if (href.includes('trimestre2') || href.includes('trimestre 2')) return '2';
+        if (href.includes('trimestre3') || href.includes('trimestre 3')) return '3';
+        
+        // Por defecto
+        return '1';
+    }
+    
+    function detectTipo(linkElement) {
+        // Buscar hacia arriba en el DOM hasta encontrar el tipo
+        let current = linkElement;
+        while (current && !current.classList.contains('submenu-item')) {
+            current = current.parentElement;
+        }
+        
+        if (current) {
+            const tipoHeader = current.querySelector('.sidebar_h2');
+            if (tipoHeader) {
+                const text = tipoHeader.textContent.toLowerCase();
+                if (text.includes('css')) return 'CSS';
+                if (text.includes('flexbox')) return 'FlexBox';
+                if (text.includes('formularios')) return 'Formularios';
+                if (text.includes('tablas')) return 'Tablas';
+                if (text.includes('xml') || text.includes('dtd') || text.includes('xsd')) return 'XML/DTD/XSD';
+                if (text.includes('wordpress')) return 'WordPress';
+                if (text.includes('xsl')) return 'XSL/XSLT';
+            }
+        }
+        
+        // Intentar detectar por URL o título
+        const href = linkElement.getAttribute('href').toLowerCase();
+        const title = linkElement.textContent.toLowerCase();
+        
+        if (href.includes('css') || title.includes('css')) return 'CSS';
+        if (href.includes('flex') || title.includes('flex')) return 'FlexBox';
+        if (href.includes('form') || title.includes('form')) return 'Formularios';
+        if (href.includes('tabla') || title.includes('tabla')) return 'Tablas';
+        if (href.includes('xml') || title.includes('xml') || 
+            href.includes('dtd') || title.includes('dtd') ||
+            href.includes('xsd') || title.includes('xsd')) return 'XML/DTD/XSD';
+        if (href.includes('wordpress') || title.includes('wordpress')) return 'WordPress';
+        if (href.includes('xsl') || title.includes('xsl') ||
+            href.includes('xslt') || title.includes('xslt')) return 'XSL/XSLT';
+        
+        // Por defecto
+        return 'Otros';
+    }
+};
+
+// Agregar el evento al botón de búsqueda para usar la función global
+document.addEventListener('DOMContentLoaded', function() {
+    const searchButton = document.getElementById('search-button');
+    const searchInput = document.getElementById('search-input');
+    
+    if (searchButton) {
+        searchButton.addEventListener('click', window.performSearch);
+    }
+    
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                window.performSearch();
+            }
+        });
+    }
+});
+</script>
+
+<!-- Overlay de búsqueda - Correcto -->
+<div class="search-overlay" id="search-overlay">
+    <div class="search-results-modal">
+        <div class="search-modal-header">
+            <div class="search-modal-title">Resultados de búsqueda</div>
+            <button class="search-modal-close" id="search-modal-close"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="search-results-content" id="search-results-content"></div>
+    </div>
+</div>
+
+<style>
+/* Agregar/corregir estilos específicos para el overlay de búsqueda */
+.search-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.search-results-modal {
+    background-color: #333;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 800px;
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+}
+
+.search-modal-header {
+    background-color: #444;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #555;
+}
+
+.search-modal-title {
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.search-modal-close {
+    background: none;
+    border: none;
+    color: #ccc;
+    font-size: 18px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.search-modal-close:hover {
+    color: #ffcc00;
+}
+
+.search-results-content {
+    padding: 20px;
+    max-height: calc(80vh - 60px);
+    overflow-y: auto;
+}
+
+/* Estilos para el mensaje de no resultados */
+.search-no-results {
+    color: #ccc;
+    text-align: center;
+    padding: 20px;
+    font-style: italic;
+}
+
+/* Versión para modo claro */
+body:not(.dark-mode) .search-results-modal {
+    background-color: #fff;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+}
+
+body:not(.dark-mode) .search-modal-header {
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #ddd;
+}
+
+body:not(.dark-mode) .search-modal-title {
+    color: #333;
+}
+
+body:not(.dark-mode) .search-modal-close {
+    color: #666;
+}
+
+body:not(.dark-mode) .search-no-results {
+    color: #666;
+}
+</style>
+
+<!-- Script para gestionar los marcadores -->
+<script>
+// Sistema de marcadores - Versión simplificada
+document.addEventListener('DOMContentLoaded', function() {
+    // Referencias a elementos del DOM
+    const bookmarksTitle = document.querySelector('.bookmarks-title');
+    const bookmarksList = document.querySelector('.bookmarks-list');
+    const bookmarksCount = document.querySelector('.bookmarks-count');
+    
+    // Función para mostrar notificaciones
+    function showNotification(message, type = 'info') {
+        // Crear div de notificación
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        
+        // Icono según tipo
+        let icon = 'info-circle';
+        if (type === 'success') icon = 'check-circle';
+        if (type === 'warning') icon = 'exclamation-triangle';
+        if (type === 'error') icon = 'times-circle';
+        
+        notification.innerHTML = `<i class="fas fa-${icon}"></i> ${message}`;
+        
+        // Añadir al body
+        document.body.appendChild(notification);
+        
+        // Mostrar con animación
+        setTimeout(() => {
+            notification.classList.add('show');
+        }, 10);
+        
+        // Ocultar después de 3 segundos
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 300);
+        }, 3000);
+    }
+    
+    // Toggle sección de marcadores
+    if (bookmarksTitle && bookmarksList) {
+        bookmarksTitle.addEventListener('click', function() {
+            bookmarksList.classList.toggle('active');
+            
+            // Rotar flecha si existe
+            const flecha = this.querySelector('.flecha');
+            if (flecha) {
+                this.classList.toggle('active');
+            }
+        });
+    }
+    
+    // Cargar y renderizar marcadores
+    function loadBookmarks() {
+        const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+        
+        if (!bookmarksList || !bookmarksCount) return;
+        
+        // Actualizar contador
+        bookmarksCount.textContent = `(${bookmarks.length})`;
+        
+        // Limpiar lista
+        bookmarksList.innerHTML = '';
+        
+        // Si no hay marcadores, mostrar mensaje
+        if (bookmarks.length === 0) {
+            const emptyMsg = document.createElement('div');
+            emptyMsg.className = 'bookmark-empty';
+            emptyMsg.innerHTML = '<i class="fas fa-info-circle"></i> No tienes marcadores guardados.';
+            bookmarksList.appendChild(emptyMsg);
+            return;
+        }
+        
+        // Ordenar marcadores por fecha (más recientes primero)
+        bookmarks.sort((a, b) => new Date(b.date) - new Date(a.date));
+        
+        // Crear elementos de marcadores
+        bookmarks.forEach((bookmark, index) => {
+            const bookmarkItem = document.createElement('div');
+            bookmarkItem.className = 'bookmark-item';
+            
+            const bookmarkTitle = document.createElement('div');
+            bookmarkTitle.className = 'bookmark-title';
+            bookmarkTitle.textContent = bookmark.title;
+            bookmarkTitle.title = `${bookmark.title} - Trimestre ${bookmark.trimestre}, ${bookmark.tipo}`;
+            
+            const bookmarkActions = document.createElement('div');
+            bookmarkActions.className = 'bookmark-actions';
+            
+            // Botón para abrir - CORREGIDO
+            const openBtn = document.createElement('button');
+            openBtn.innerHTML = '<i class="fas fa-external-link-alt"></i>';
+            openBtn.title = 'Abrir ejercicio';
+            openBtn.addEventListener('click', function() {
+                // Asegurar que el iframe exista y establecer la URL completa
+                const iframe = document.querySelector('iframe[name="contentFrame"]');
+                if (iframe) {
+                    // Normalizar la ruta eliminando barras diagonales iniciales si existen
+                    let normalizedHref = bookmark.href;
+                    if (normalizedHref.startsWith('\\')) {
+                        normalizedHref = normalizedHref.substring(1);
+                    }
+                    iframe.src = normalizedHref;
+                    console.log("Abriendo URL:", normalizedHref);
+                    
+                    // Mostrar notificación
+                    showNotification(`Abriendo "${bookmark.title}"`, 'info');
+                } else {
+                    console.error("No se encontró el iframe para mostrar el contenido");
+                    showNotification('Error al abrir el ejercicio', 'error');
+                }
+            });
+            
+            // Botón para eliminar
+            const deleteBtn = document.createElement('button');
+            deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+            deleteBtn.title = 'Eliminar de marcadores';
+            deleteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                removeBookmark(index);
+            });
+            
+            // Añadir botones a las acciones
+            bookmarkActions.appendChild(openBtn);
+            bookmarkActions.appendChild(deleteBtn);
+            
+            // Construir elemento de marcador
+            bookmarkItem.appendChild(bookmarkTitle);
+            bookmarkItem.appendChild(bookmarkActions);
+            
+            // Añadir a la lista
+            bookmarksList.appendChild(bookmarkItem);
+        });
+        
+        // Si hay marcadores y la lista no está visible, hacer parpadear el título
+        if (bookmarks.length > 0 && !bookmarksList.classList.contains('active')) {
+            bookmarksTitle.classList.add('has-bookmarks');
+            setTimeout(() => {
+                bookmarksTitle.classList.remove('has-bookmarks');
+            }, 2000);
+        }
+    }
+    
+    // Función para eliminar marcador
+    function removeBookmark(index) {
+        let bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+        
+        if (index >= 0 && index < bookmarks.length) {
+            const removed = bookmarks.splice(index, 1)[0];
+            localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+            loadBookmarks(); // Recargar la lista
+            showNotification(`"${removed.title}" eliminado de marcadores`, 'info');
+        }
+    }
+    
+    // Definir función global para añadir marcadores
+    window.addToBookmarks = function(title, href, trimestre, tipo) {
+        // Obtener marcadores actuales
+        let bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+        
+        // Comprobar si ya existe este marcador
+        const exists = bookmarks.some(b => b.href === href);
+        
+        if (exists) {
+            showNotification('Este ejercicio ya está en tus marcadores', 'warning');
+            return;
+        }
+        
+        // Añadir nuevo marcador
+        bookmarks.push({
+            title: title,
+            href: href,
+            trimestre: trimestre,
+            tipo: tipo,
+            date: new Date().toISOString()
+        });
+        
+        // Guardar marcadores
+        localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+        
+        // Actualizar vista
+        loadBookmarks();
+        
+        // Mostrar notificación
+        showNotification('Ejercicio añadido a marcadores', 'success');
+        
+        // Si la lista está cerrada, abrirla
+        if (bookmarksList && !bookmarksList.classList.contains('active')) {
+            bookmarksList.classList.add('active');
+            if (bookmarksTitle) bookmarksTitle.classList.add('active');
+        }
+    };
+    
+    // Cargar marcadores al iniciar
+    loadBookmarks();
+});
+</script>
+
+<!-- Estilos adicionales para marcadores -->
+<style>
+/* Efectos visuales para marcadores */
+.bookmarks-title.has-bookmarks {
+    animation: pulse-bookmark 1s infinite;
+}
+
+.bookmarks-list {
+    padding-left: 10px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.bookmarks-list.active {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+.bookmark-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    background-color: #2a2a2a;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    transition: all 0.2s;
+}
+
+.bookmark-item:hover {
+    background-color: #444;
+    transform: translateX(5px);
+}
+
+.bookmark-title {
+    color: #fff;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+}
+
+.bookmark-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.bookmark-item button {
+    background: none;
+    border: none;
+    color: #ffcc00;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s;
+    padding: 5px;
+    border-radius: 3px;
+}
+
+.bookmark-item button:hover {
+    color: #fff;
+    background-color: rgba(255, 204, 0, 0.3);
+}
+
+.bookmark-empty {
+    padding: 10px;
+    color: #aaa;
+    font-style: italic;
+    text-align: center;
+    font-size: 12px;
+}
+
+@keyframes pulse-bookmark {
+    0% { opacity: 0.7; }
+body:not(.dark-mode) .bookmark-empty {
+    color: #777;ty: 0.7; }
+}
+
+/* Notificaciones mejoradas */-item {
+.notification {color: #f0f0f0;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;ode) .bookmark-title {
+    background-color: #333;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;ookmark-item:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 2000;
+    display: flex;
+    align-items: center;okmark-empty {
+    font-size: 14px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s, transform 0.3s;
+}notification {
+    position: fixed;
+.notification.show {
+    opacity: 1;;
+    transform: translateY(0);
+}   color: white;
+    padding: 12px 20px;
+.notification i {: 8px;
+    margin-right: 8px;12px rgba(0, 0, 0, 0.2);
+    font-size: 16px;
+}   display: flex;
+    align-items: center;
+.notification-success {
+    background-color: #4CAF50;
+}   transform: translateY(20px);
+    transition: opacity 0.3s, transform 0.3s;
+.notification-info {
+    background-color: #2196F3;
+}notification.show {
+    opacity: 1;
+.notification-warning {eY(0);
+    background-color: #FF9800;
+}
+.notification i {
+.notification-error {;
+    background-color: #F44336;
+}
+</style>
+.notification-success {
+<!-- CARGAR LOS MÓDULOS DEL CHATBOT EN ORDEN CORRECTO -->
+<link rel="stylesheet" href="js/chatbot-styles.css">
+<script src="js/chatbot-data.js"></script>
+<script src="js/chatbot-logic.js"></script> 
+<script src="js/chatbot-ui.js"></script>
+<script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>});    }        console.error("Chatbot: No se encontraron los módulos necesarios");    } else {        });            }                }, Math.random() * 1000 + 500);                    window.ChatbotUI.addMessage(formattedResponse, 'bot');                    // Mostrar respuesta formateada                                        const formattedResponse = window.ChatbotLogic.formatMessage(response);                    // Formatear respuesta si contiene código                                        const response = window.ChatbotLogic.generateResponse(event.detail.message);                    // Generar respuesta                                        window.ChatbotUI.removeTypingIndicator();                    // Eliminar indicador de escritura                setTimeout(function() {                // Simular tiempo de respuesta                                window.ChatbotUI.showTypingIndicator();                // Mostrar indicador de escritura                                window.ChatbotUI.addMessage(event.detail.message, 'user');                // Mostrar mensaje del usuario            if (window.ChatbotLogic && event.detail && event.detail.message) {        document.addEventListener('chatbot-message-sent', function(event) {        // Configurar conexión entre módulos                }            }                chatbotContainer.classList.remove('dark-mode');            } else {                chatbotContainer.classList.add('dark-mode');            if (document.body.classList.contains('dark-mode')) {            // Aplicar modo oscuro si es necesario                        chatbotContainer.style.display = localStorage.getItem('chatbotOpen') === 'true' ? 'flex' : 'none';            // Forzar actualización de estilos        if (chatbotContainer) {                const chatbotMessages = document.getElementById('chatbot-messages');        const chatbotContainer = document.getElementById('chatbot-container');        // Asegurar que los estilos del chatbot se apliquen correctamente                }            console.error("Chatbot: Error al inicializar lógica");        } else {            console.log("Chatbot: Lógica inicializada correctamente");        if (window.ChatbotLogic.init()) {        // Inicializar lógica después                }            console.error("Chatbot: Error al inicializar UI");        } else {            console.log("Chatbot: UI inicializada correctamente");        if (window.ChatbotUI.init()) {        // Inicializar la UI primero                console.log("Chatbot: Módulos cargados correctamente");    if (window.ChatbotUI && window.ChatbotLogic) {    // Verificar que los módulos estén cargadosdocument.addEventListener('DOMContentLoaded', function() {// Script de inicialización inline para asegurar que los estilos se apliquen correctamente
+.notification-warning {
+    background-color: #FF9800;
+}
+
+.notification-error {
+    background-color: #F44336;
+}
+</style>
+
+<!-- CARGAR LOS MÓDULOS DEL CHATBOT EN ORDEN CORRECTO -->
+<link rel="stylesheet" href="js/chatbot-styles.css">
+<script src="js/chatbot-data.js"></script>
+<script src="js/chatbot-logic.js"></script> 
+<script src="js/chatbot-ui.js"></script>
+<script src="js/chatbot-init.js"></script>

@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía del Chatbot Asistente</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        h1, h2, h3 {
+            color: #ffcc00;
+        }
+        
+        .feature-card {
+            background-color: #2d2d2d;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .feature-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .feature-icon {
+            background-color: #ffcc00;
+            color: #333;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            font-size: 18px;
+        }
+        
+        .command {
+            background-color: #444;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-weight: bold;
+            color: #ffcc00;
+        }
+        
+        .tip {
+            background-color: rgba(255, 204, 0, 0.1);
+            border-left: 4px solid #ffcc00;
+            padding: 10px 15px;
+            margin: 15px 0;
+        }
+        
+        .tip-title {
+            font-weight: bold;
+            color: #ffcc00;
+            margin-bottom: 5px;
+        }
+        
+        .screenshot {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid #444;
+        }
+        
+        code {
+            background-color: #333;
+            color: #ffcc00;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        
+        /* Estilos para ejemplo de interfaz */
+        .interface-example {
+            background-color: #333;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: monospace;
+        }
+        
+        .bot-message-example {
+            background-color: #444;
+            color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            max-width: 80%;
+        }
+        
+        .user-message-example {
+            background-color: #ffcc00;
+            color: #333;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            margin-left: auto;
+            max-width: 80%;
+        }
+        
+        .code-block-example {
+            background-color: #222;
+            border: 1px solid #555;
+            border-radius: 5px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .code-header-example {
+            background-color: #333;
+            padding: 5px 10px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+        }
+        
+        .code-content-example {
+            padding: 10px;
+            color: #ffcc00;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body class="dark-mode">
+    <h1><i class="fas fa-robot"></i> Guía del Chatbot Asistente</h1>
+    <p>
+        El chatbot asistente ha sido mejorado con nuevas funcionalidades para ayudarte durante el curso.
+        Esta guía te mostrará cómo aprovechar al máximo todas estas características.
+    </p>
+    
+    <!-- 1. Acceso y ubicación -->
+    <div class="feature-card">
+        <div class="feature-header">
+            <div class="feature-icon">
+                <i class="fas fa-comment-dots"></i>
+            </div>
+            <h2>Acceso al Chatbot</h2>
+        </div>
+        <p>El chatbot está disponible desde cualquier página del curso. Puedes activarlo haciendo clic en el botón redondo amarillo con un icono de comentario ubicado en la esquina inferior derecha de la pantalla.</p>
+        
+        <h3>Para abrir el chatbot:</h3>
+        <ol>
+            <li>Localiza el botón <i class="fas fa-comment-dots"></i> en la esquina inferior derecha</li>
+            <li>Haz clic en el botón para abrir la ventana del chatbot</li>
+            <li>Para cerrar o minimizar, usa los botones en la esquina superior derecha de la ventana del chatbot</li>
+        </ol>
+    </div>
+    
+    <!-- 2. Preguntas básicas -->
+    <div class="feature-card">
+        <div class="feature-header">
+            <div class="feature-icon">
+                <i class="fas fa-question-circle"></i>
+            </div>
+            <h2>Preguntas básicas</h2>
+        </div>
+        <p>Puedes hacer preguntas sobre el curso escribiendo en el campo de texto y presionando Enter o haciendo clic en el botón de enviar.</p>
+        
+        <h3>Ejemplos de preguntas que puedes hacer:</h3>
+        <ul>
+            <li>"¿Qué es HTML?"</li>
+            <li>"¿Cuándo termina el curso?"</li>
+            <li>"¿Dónde encuentro los ejercicios de CSS?"</li>
+            <li>"¿Cómo funciona FlexBox?"</li>
+            <li>"Explícame qué es XML"</li>
+        </ul>
+        
+        <div class="interface-example">
+            <div class="bot-message-example">
+                ¡Hola! Soy el asistente del curso de Lenguajes de Marcas. ¿En qué puedo ayudarte?
+            </div>
+            <div class="user-message-example">
+                ¿Qué es FlexBox?
+            </div>
+            <div class="bot-message-example">
+                FlexBox es un modelo de diseño de CSS que permite crear layouts flexibles y responsivos. Es especialmente útil para la distribución de espacio entre elementos y para organizar elementos en una dirección (horizontal o vertical). Puedes encontrar ejemplos en la sección de ejercicios de FlexBox del primer trimestre.
+            </div>
+        </div>
+    </div>
+    
+    <!-- 3. Sugerencias interactivas -->
+    <div class="feature-card">
+        <div class="feature-header">
+            <div class="feature-icon">
+                <i class="fas fa-lightbulb"></i>
+            </div>
+            <h2>Sugerencias interactivas</h2>
+        </div>
+        <p>El chatbot muestra botones con preguntas frecuentes que puedes pulsar para obtener respuestas rápidas sin necesidad de escribir.</p>
+        
+        <h3>Para usar las sugerencias:</h3>
+        <ol>
+            <li>Observa los botones con preguntas comunes debajo del área de mensajes</li>
+            <li>Haz clic en cualquiera de ellos para enviar esa pregunta automáticamente</li>
+            <li>Las sugerencias cambian según el contexto de la conversación</li>
+        </ol>
+        
+        <div class="tip">
+            <div class="tip-title"><i class="fas fa-star"></i> CONSEJO</div>
+            <p>Las sugerencias son especialmente útiles cuando no estás seguro de qué preguntar o quieres explorar las capacidades del asistente.</p>
+        </div>
+    </div>
+    
+    <!-- 4. Ejemplos de código -->
+    <div class="feature-card">
+        <div class="feature-header">
+            <div class="feature-icon">
+                <i class="fas fa-code"></i>
+            </div>
+            <h2>Ejemplos de código</h2>
+        </div>
+        <p>El chatbot puede mostrar ejemplos de código con formato y resaltado de sintaxis. Además, puedes copiar el código con un solo clic.</p>
+        
+        <h3>Para obtener ejemplos de código:</h3>
+        <ul>
+            <li>Escribe <span class="command">ejemplo de HTML</span> o <span class="command">ejemplo de CSS</span></li>
+            <li>También puedes usar: <span class="command">código HTML</span>, <span class="command">ejemplo FlexBox</span>, <span class="command">ejemplo XML</span></li>
+            <li>Para copiar el código, haz clic en el icono <i class="fas fa-copy"></i> en la esquina superior derecha del bloque de código</li>
+        </ul>
+        
+        <div class="interface-example">
+            <div class="user-message-example">
+                dame un ejemplo de HTML
+            </div>
+            <div class="bot-message-example">
+                Aquí tienes un ejemplo básico de HTML:
+                <div class="code-block-example">
+                    <div class="code-header-example">
+                        <span>html</span>
+                        <button><i class="fas fa-copy"></i></button>
+                    </div>
+                    <div class="code-content-example">
+                        &lt;!DOCTYPE html&gt;<br>
+                        &lt;html lang="es"&gt;<br>
+                        &lt;head&gt;<br>
+                        &nbsp;&nbsp;&lt;meta charset="UTF-8"&gt;<br>
+                        &nbsp;&nbsp;&lt;title&gt;Mi página web&lt;/title&gt;<br>
+                        &lt;/head&gt;<br>
+                        &lt;body&gt;<br>
+                        &nbsp;&nbsp;&lt;h1&gt;Hola mundo&lt;/h1&gt;<br>
+                        &nbsp;&nbsp;&lt;p&gt;Este es un párrafo en HTML.&lt;/p&gt;<br>
+                        &lt;/body&gt;<br>
+                        &lt;/html&gt;
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 5. Búsqueda integrada -->
+    <div class="feature-card">
+        <div class="feature-header">
+            <div class="feature-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <h2>Búsqueda integrada</h2>
+        </div>
+        <p>El chatbot puede buscar ejercicios y contenido en todo el curso, utilizando el sistema de búsqueda global.</p>
+        
+        <h3>Para buscar contenido:</h3>
+        <ul>
+            <li>Escribe <span class="command">buscar [término]</span>, por ejemplo: <span class="command">buscar flexbox</span></li>
+            <li>También puedes usar: <span class="command">encuentra ejercicios de tablas</span> o <span class="command">busca XML</span></li>
+            <li>El chatbot te mostrará los resultados relacionados y los marcará en el panel de búsqueda</li>
+        </ul>
+        
+        <div class="tip">
+            <div class="tip-title"><i class="fas fa-star"></i> CONSEJO</div>
+            <p>Esta función es muy útil para encontrar rápidamente ejercicios específicos sin tener que navegar manualmente por todas las secciones.</p>
+        </div>
+    </div>
+    
+    <!-- 6. Calificación de respuestas -->
+    <div class="feature-card">
+        <div class="feature-header">
+            <div class="feature-icon">
+                <i class="fas fa-thumbs-up"></i>
+            </div>
+            <h2>Calificación de respuestas</h2>
+        </div>
+        <p>Puedes indicar si una respuesta del chatbot fue útil o no, lo que ayuda a mejorar sus respuestas futuras.</p>
+        
+        <h3>Para calificar una respuesta:</h3>
+        <ol>
+            <li>Después de recibir una respuesta, observa los iconos de pulgar arriba <i class="fas fa-thumbs-up"></i> y pulgar abajo <i class="fas fa-thumbs-down"></i> que aparecen</li>
+            <li>Haz clic en <i class="fas fa-thumbs-up"></i> si la respuesta fue útil</li>
+            <li>Haz clic en <i class="fas fa-thumbs-down"></i> si la respuesta no fue útil o relevante</li>
+        </ol>
+        
+        <p>Tu feedback se guarda y ayuda a mejorar las respuestas en el futuro. Después de dar feedback, verás un mensaje de agradecimiento.</p>
+    </div>
+    
+    <!-- 7. Historial y configuración -->
+    <div class="feature-card">
+        <div class="feature-header">
+            <div class="feature-icon">
+                <i class="fas fa-cog"></i>
+            </div>
+            <h2>Historial y configuración</h2>
+        </div>
+        <p>El chatbot ahora permite gestionar el historial de conversación y personalizar la apariencia.</p>
+        
+        <h3>Gestión del historial:</h3>
+        <ul>
+            <li>Para <strong>exportar</strong> tu historial de chat, haz clic en el botón "Exportar chat" en los controles de historial</li>
+            <li>Para <strong>limpiar</strong> todo el historial, haz clic en "Limpiar chat"</li>
+        </ul>
+        
+        <h3>Configuración de visualización:</h3>
+        <ul>
+            <li>Haz clic en el icono de configuración <i class="fas fa-cog"></i> en la esquina superior derecha del chatbot</li>
+            <li>Ajusta el <strong>tamaño del texto</strong> con los botones A-, A, A+</li>
+            <li>Activa o desactiva los <strong>sonidos de notificación</strong> con la casilla correspondiente</li>
+        </ul>
+        
+        <div class="tip">
+            <div class="tip-title"><i class="fas fa-star"></i> CONSEJO</div>
+            <p>El chatbot recuerda tu historial entre sesiones, por lo que puedes continuar conversaciones anteriores cuando regreses al curso.</p>
+        </div>
+    </div>
+    
+    <!-- Comandos rápidos -->
+    <div class="feature-card">
+        <div class="feature-header">
+            <div class="feature-icon">
+                <i class="fas fa-bolt"></i>
+            </div>
+            <h2>Comandos rápidos</h2>
+        </div>
+        <h3>Resumen de comandos disponibles:</h3>
+        <table style="width:100%; border-collapse: collapse; margin-top: 15px;">
+            <tr style="background-color: #333; text-align: left;">
+                <th style="padding: 10px; border: 1px solid #444;">Comando</th>
+                <th style="padding: 10px; border: 1px solid #444;">Función</th>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #444;"><code>ayuda chat</code> o <code>comandos</code></td>
+                <td style="padding: 10px; border: 1px solid #444;">Muestra lista de todas las funciones disponibles</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #444;"><code>ejemplo de [lenguaje]</code></td>
+                <td style="padding: 10px; border: 1px solid #444;">Muestra un ejemplo de código (HTML, CSS, FlexBox, XML)</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #444;"><code>buscar [término]</code></td>
+                <td style="padding: 10px; border: 1px solid #444;">Busca en el contenido del curso</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #444;"><code>qué puedes hacer</code></td>
+                <td style="padding: 10px; border: 1px solid #444;">Muestra las capacidades del chatbot</td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="tip" style="margin-top: 30px;">
+        <div class="tip-title"><i class="fas fa-info-circle"></i> IMPORTANTE</div>
+        <p>El chatbot está diseñado para ayudarte con el curso de Lenguajes de Marcas. Si tienes alguna pregunta sobre HTML, CSS, JavaScript, XML o cualquier otro tema del curso, ¡no dudes en preguntar!</p>
+    </div>
+
+    <p style="margin-top: 40px; text-align: center; color: #aaa; font-size: 14px;">
+        © 2023 - Lenguajes de Marcas - Documentación del Chatbot Asistente
+    </p>
+
+    <script>
+        // Detectar modo oscuro/claro y ajustar estilos
+        document.addEventListener('DOMContentLoaded', function() {
+            const isDarkMode = localStorage.getItem('darkMode') === 'true';
+            if (!isDarkMode) {
+                document.body.classList.remove('dark-mode');
+                adjustLightModeStyles();
+            }
+            
+            function adjustLightModeStyles() {
+                document.querySelectorAll('.feature-card').forEach(card => {
+                    card.style.backgroundColor = '#f5f5f5';
+                    card.style.color = '#333';
+                });
+                
+                document.querySelectorAll('h1, h2, h3').forEach(heading => {
+                    heading.style.color = '#e6b800';
+                });
+                
+                document.querySelectorAll('code, .command').forEach(element => {
+                    element.style.backgroundColor = '#eee';
+                    element.style.color = '#e6b800';
+                });
+                
+                document.querySelectorAll('.bot-message-example').forEach(message => {
+                    message.style.backgroundColor = '#eee';
+                    message.style.color = '#333';
+                });
+                
+                document.querySelectorAll('.interface-example').forEach(example => {
+                    example.style.backgroundColor = '#f5f5f5';
+                    example.style.border = '1px solid #ddd';
+                });
+                
+                document.querySelectorAll('.code-block-example').forEach(block => {
+                    block.style.backgroundColor = '#f8f8f8';
+                    block.style.border = '1px solid #ddd';
+                });
+                
+                document.querySelectorAll('.code-header-example').forEach(header => {
+                    header.style.backgroundColor = '#eee';
+                });
+                
+                document.querySelectorAll('.code-content-example').forEach(content => {
+                    content.style.color = '#e6b800';
+                });
+                
+                document.querySelectorAll('.tip').forEach(tip => {
+                    tip.style.backgroundColor = 'rgba(255, 204, 0, 0.05)';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

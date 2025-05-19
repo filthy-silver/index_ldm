@@ -1,23 +1,23 @@
-/* Estilos actualizados para el chatbot reposicionado */
+/* Estilos actualizados para el chatbot */
 
-/* Botón del chatbot reposicionado al centro-derecha */
+/* Asegurarse de que el botón del chatbot esté visible y correctamente posicionado */
 .chatbot-button {
-     position: fixed;
+    position: fixed;
     bottom: 30px;
-    right: 30px; 
-    width: 70px;
-    height: 70px;
+    right: 90px; /* Alejado de la esquina */
+    width: 60px; /* Tamaño ajustado */
+    height: 60px; /* Tamaño ajustado */
     border-radius: 50%;
     background-color: #ffcc00;
     color: #333;
     border: none;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     cursor: pointer;
     z-index: 1000;
+    font-size: 24px;
     transition: all 0.3s;
     overflow: visible;
 }
@@ -61,14 +61,22 @@
     }
 }
 
-/* Chatbot container también reposicionado */
+/* Chatbot container posicionado correctamente */
 .chatbot-container {
     position: fixed;
-    bottom: 110px;
-    right: 30px; /* Cambiado de 10% a un valor fijo */
+    bottom: 100px;
+    right: 90px; /* Alejado de la esquina */
     width: 360px;
-    height: 500px;
-    /* Resto de propiedades se mantienen igual */
+    height: 450px;
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+    display: none; /* Oculto por defecto */
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 1000;
+    transition: all 0.3s;
+    border: 2px solid #ffcc00;
 }
 
 /* Botón de minimizar mejorado */
@@ -149,12 +157,14 @@
     .chatbot-button {
         right: 20px;
         bottom: 20px;
+        width: 50px;
+        height: 50px;
     }
     
     .chatbot-container {
         right: 10px;
-        bottom: 100px;
+        bottom: 80px;
         width: calc(100% - 20px);
-        max-width: 400px;
+        max-width: 350px;
     }
 }

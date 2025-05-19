@@ -1,19 +1,21 @@
 /* === Estilos básicos === */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Arial, sans-serif;
     background-color: #333;
     margin: 0;
     padding: 0;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .container {
     display: flex;
     height: 100vh;
+    transition: padding-top 0.3s;
 }
 
 /* === Estilos del sidebar === */
 .sidebar {
-    width: 250px;
+    width: 280px;
     background-color: #333;
     color: #fff;
     padding: 20px;
@@ -22,6 +24,8 @@ body {
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: #ffcc00 #333;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
 }
 
 /* === Título principal === */
@@ -33,6 +37,22 @@ h1 {
     text-transform: uppercase;
     border-bottom: 2px solid #ffcc00;
     padding-bottom: 10px;
+    transition: all 0.3s;
+}
+
+h1 a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+h1 a i {
+    margin-right: 10px;
+    transition: transform 0.3s;
+}
+
+h1 a:hover i {
+    transform: rotate(20deg);
 }
 
 /* === Estructura del menú === */
@@ -48,6 +68,7 @@ h1 {
     padding-left: 15px;
     border-left: 1px solid #555;
     display: none; /* Oculto por defecto */
+    transition: all 0.3s ease;
 }
 
 /* === Títulos de trimestre === */
@@ -60,19 +81,28 @@ h1 {
     cursor: pointer;
     position: relative;
     padding-left: 25px;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+}
+
+.sidebar_h1:hover {
+    color: #ffcc00;
+    transform: translateX(5px);
 }
 
 .flecha {
     position: absolute;
     left: 5px;
-    top: 2px;
+    top: 50%;
+    transform: translateY(-50%);
     transition: transform 0.3s;
     font-size: 0.8em;
     color: #ffcc00;
 }
 
 .sidebar_h1.active > .flecha {
-    transform: rotate(90deg);
+    transform: translateY(-50%) rotate(90deg);
 }
 
 /* === Subtítulos de ejercicios === */
@@ -86,6 +116,7 @@ h1 {
     font-size: 1em;
     margin-bottom: 10px;
     color: #fff;
+    transition: all 0.3s;
 }
 
 .sidebar_h2.desplegable {
@@ -94,19 +125,27 @@ h1 {
     padding-left: 20px;
     margin-bottom: 5px;
     transition: all 0.2s;
+    display: flex;
+    align-items: center;
+}
+
+.sidebar_h2.desplegable:hover {
+    color: #ffcc00;
+    transform: translateX(5px);
 }
 
 .flecha-sub {
     position: absolute;
     left: 0;
-    top: 2px;
+    top: 50%;
+    transform: translateY(-50%);
     transition: transform 0.3s;
     font-size: 0.7em;
     color: #ffcc00;
 }
 
 .sidebar_h2.desplegable.active > .flecha-sub {
-    transform: rotate(90deg);
+    transform: translateY(-50%) rotate(90deg);
 }
 
 /* === Listas de ejercicios === */
@@ -128,19 +167,35 @@ h1 {
 
 /* === Enlaces del menú === */
 .sidebar ul li a {
-    display: block;
+    display: flex;
+    align-items: center;
     color: #fff;
     text-decoration: none;
-    margin-left: 20px;
+    margin-left: 10px;
     background: #4d4d4d;
-    padding: 8px 10px;
-    border-radius: 3px;
+    padding: 10px 12px;
+    border-radius: 5px;
     transition: all 0.2s;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar ul li a i {
+    margin-right: 10px;
+    min-width: 16px;
+    font-size: 14px;
+    color: #ffcc00;
+    transition: all 0.3s;
 }
 
 .sidebar ul li a:hover {
-    color: #d6c890;
-    background-color: #333;
+    color: #fff;
+    background-color: #555;
+    transform: translateX(5px);
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar ul li a:active {
+    transform: translateX(5px) scale(0.98);
 }
 
 /* === Contenido principal e iframe === */
@@ -150,13 +205,16 @@ h1 {
     box-sizing: border-box;
     height: 100vh;
     overflow: hidden;
+    position: relative;
 }
 
 iframe {
     width: 100%;
     height: 100%;
     border: none;
-    box-shadow: #1111110e 0px 0px 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    transition: all 0.3s;
 }
 
 /* === Estilos del scrollbar === */
@@ -171,4 +229,274 @@ iframe {
 .sidebar::-webkit-scrollbar-thumb {
     background-color: #ffcc00;
     border-radius: 4px;
+}
+
+/* Estilos para el modo oscuro */
+.dark-mode {
+    background-color: #1a1a1a;
+    color: #f5f5f5;
+}
+
+.dark-mode .sidebar {
+    background-color: #222;
+}
+
+.dark-mode .sidebar ul li a {
+    background-color: #333;
+}
+
+.dark-mode .sidebar ul li a:hover {
+    background-color: #444;
+}
+
+/* Animación para los links */
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+    40% {transform: translateY(-5px);}
+    60% {transform: translateY(-3px);}
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        height: auto;
+    }
+    
+    .sidebar {
+        width: 100%;
+        height: auto;
+        max-height: 300px;
+    }
+    
+    .content {
+        height: calc(100vh - 300px);
+    }
+    
+    .control-buttons {
+        bottom: 70px;
+    }
+}
+
+/* Animaciones adicionales */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Efectos de animación para elementos del menú */
+.menu-item, .submenu-item {
+    animation: fadeIn 0.5s ease;
+}
+
+.logo-link, .sidebar_h1, .sidebar_h2 {
+    position: relative;
+    overflow: hidden;
+}
+
+.logo-link::before, .sidebar_h1::before, .sidebar_h2::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background-color: #ffcc00;
+    transition: width 0.3s ease;
+    z-index: 1;
+}
+
+.logo-link:hover::before, .sidebar_h1:hover::before, .sidebar_h2:hover::before {
+    width: 100%;
+}
+
+/* Efecto de hover para los botones de control */
+.control-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.control-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s;
+}
+
+.control-btn:hover::after {
+    width: 150%;
+    height: 150%;
+}
+
+/* Animación para el loader */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Estilos para el modo oscuro en la página principal */
+
+/* Variables CSS para colores */
+:root {
+    --primary-color: #ffcc00;
+    --primary-dark: #e6b800;
+    --text-dark: #333;
+    --text-light: #fff;
+    --bg-light: #f5f5f5;
+    --bg-dark: #333;
+    --bg-darker: #222;
+    --sidebar-light: #333;
+    --sidebar-dark: #222;
+    --menu-item-light: #4d4d4d;
+    --menu-item-dark: #444;
+    --border-light: #555;
+    --border-dark: #444;
+    --shadow-light: rgba(0, 0, 0, 0.2);
+    --shadow-dark: rgba(0, 0, 0, 0.4);
+}
+
+/* Transiciones suaves para cambios de modo */
+body, .sidebar, .content, iframe, .sidebar_h1, .sidebar_h2, .ejercicio, 
+.sidebar ul li a, h1, p, .menu-content, .submenu-item, .flecha, .flecha-sub {
+    transition: all 0.3s ease;
+}
+
+/* Estilos para el modo oscuro */
+body.dark-mode {
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+}
+
+/* Sidebar en modo oscuro */
+body.dark-mode .sidebar {
+    background-color: var(--sidebar-dark);
+}
+
+body.dark-mode .sidebar_h1 {
+    border-bottom-color: var(--primary-dark);
+}
+
+body.dark-mode .flecha, 
+body.dark-mode .flecha-sub {
+    color: var(--primary-dark);
+}
+
+body.dark-mode .sidebar ul li a {
+    background-color: var(--menu-item-dark);
+}
+
+body.dark-mode .sidebar ul li a:hover {
+    background-color: var(--bg-darker);
+    color: var(--primary-color);
+}
+
+body.dark-mode .menu-content {
+    border-left-color: var(--border-dark);
+}
+
+body.dark-mode .ejercicio {
+    border-left-color: var(--border-dark);
+}
+
+/* Contenido del iframe en modo oscuro */
+body.dark-mode .content {
+    background-color: var(--bg-dark);
+}
+
+body.dark-mode iframe {
+    box-shadow: 0 0 15px var(--shadow-dark);
+}
+
+/* Scrollbar en modo oscuro */
+body.dark-mode .sidebar::-webkit-scrollbar-track {
+    background: var(--sidebar-dark);
+}
+
+body.dark-mode .sidebar::-webkit-scrollbar-thumb {
+    background-color: var(--primary-dark);
+}
+
+/* Control buttons en modo oscuro */
+body.dark-mode .control-buttons .control-btn {
+    background-color: var(--bg-darker);
+    color: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+body.dark-mode .control-buttons .control-btn:hover {
+    box-shadow: 0 8px 15px var(--shadow-dark);
+}
+
+/* Toggle del modo oscuro en la parte superior */
+.dark-mode-toggle {
+    position: fixed;
+    top: 30px;
+    right: 90px; /* Alejado de la esquina */
+    background: rgba(34,34,34,0.85);
+    border: none;
+    color: #ffcc00;
+    font-size: 1.8rem; /* Tamaño reducido */
+    cursor: pointer;
+    transition: transform 0.3s, background 0.3s;
+    z-index: 2000;
+    border-radius: 50%;
+    width: 48px; /* Tamaño reducido */
+    height: 48px; /* Tamaño reducido */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+}
+
+.dark-mode-toggle:hover {
+    transform: rotate(30deg) scale(1.1);
+    background: #222;
+}
+
+body.dark-mode .dark-mode-toggle {
+    color: #e6b800;
+    background: rgba(51,51,51,0.95);
+}
+
+/* Hello bar en modo oscuro */
+body.dark-mode .hello-bar {
+    background-color: var(--primary-dark);
+    color: var(--bg-darker);
+}
+
+/* Tooltip en modo oscuro */
+body.dark-mode .tooltip-text {
+    background-color: var(--bg-darker);
+    color: var(--text-light);
+}
+
+/* Animaciones en modo oscuro */
+@keyframes floating-dark {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+    100% { transform: translateY(0px); }
+}
+
+body.dark-mode .floating {
+    animation: floating-dark 3s ease-in-out infinite;
+}
+
+/* Estilo para cuando el modo oscuro está activado en todos los dispositivos */
+@media (prefers-color-scheme: dark) {
+    body:not(.light-mode) {
+        background-color: var(--bg-dark);
+        color: var(--text-light);
+    }
+    /* Se pueden repetir los mismos estilos que para body.dark-mode */
 }

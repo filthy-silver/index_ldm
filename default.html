@@ -1,15 +1,992 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome Page</title>
+    <title>Welcome Page - Mejorada</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Animate.css para animaciones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- CSS personalizado -->
     <link rel="stylesheet" href="styleDefault.css">
+    <style>
+        /* Contenedor principal responsivo y sin overflow */
+        .container.mt-4 {
+            padding-top: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 100vw;
+            overflow-x: hidden;
+            box-sizing: border-box;
+        }
+
+        .text-center {
+            width: 100%;
+            max-width: 100vw;
+            padding-top: 100px;
+            margin-bottom: 30px;
+            padding-left: 15px;
+            padding-right: 15px;
+            box-sizing: border-box;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        h1.animate__animated.animate__fadeInDown {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+            color: #ffcc00;
+            max-width: 100%;
+            word-break: break-word;
+        }
+
+        .text-center p {
+            max-width: 100%;
+            word-break: break-word;
+        }
+
+        /* Media queries para asegurar responsividad */
+        @media (max-width: 1200px) {
+            h1.animate__animated.animate__fadeInDown {
+                font-size: 2.2rem;
+            }
+            .text-center {
+                padding-top: 70px;
+            }
+        }
+        @media (max-width: 768px) {
+            h1.animate__animated.animate__fadeInDown {
+                font-size: 1.8rem;
+            }
+            .text-center {
+                padding-top: 50px;
+            }
+            .container.mt-4 {
+                padding: 0;
+                width: 100%;
+                max-width: 100vw;
+                overflow-x: hidden;
+            }
+            p.mb-4 {
+                font-size: 0.9rem;
+                max-width: 100%;
+            }
+            .row {
+                margin-left: 0;
+                margin-right: 0;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1.animate__animated.animate__fadeInDown {
+                font-size: 1.4rem;
+                margin-bottom: 10px;
+            }
+            .text-center {
+                padding-top: 30px;
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+            .text-center p {
+                font-size: 0.85rem;
+            }
+            .resource-carousel {
+                max-width: 100%;
+                margin-left: 5px;
+                margin-right: 5px;
+            }
+            .resource-card {
+                padding: 15px 10px;
+            }
+            .feature-card {
+                margin-bottom: 10px;
+            }
+            .btn {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* ELIMINAR COMPLETAMENTE esta regla de cursor personalizado */
+        
+        /* Estilos para el hellobar */
+        .hello-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #ffcc00;
+            color: #333;
+            padding: 10px 0;
+            text-align: center;
+            font-weight: bold;
+            z-index: 1000;
+            display: none;
+        }
+        
+        /* Botón de cierre para la hello-bar */
+        .hello-bar-close {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 16px;
+            color: #333;
+            background: none;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+        }
+        
+        .hello-bar-close:hover {
+            background-color: rgba(0,0,0,0.1);
+        }
+        
+        /* Ajustar estructura del contenido principal para mejorar la posición del mensaje de bienvenida */
+        .container.mt-4 {
+            padding-top: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* No usamos justify-content: center aquí para permitir mejor control */
+        }
+        
+        .text-center {
+            width: 100%;
+            padding-top: 100px; /* Reducido desde 120px */
+            margin-bottom: 30px;
+            padding-left: 15px;
+            padding-right: 15px;
+            box-sizing: border-box;
+        }
+        
+        h1.animate__animated.animate__fadeInDown {
+            font-size: 3rem; /* Aumentamos tamaño */
+            margin-bottom: 1.5rem;
+            text-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+            color: #ffcc00;
+        }
+        
+        /* Ajustamos posición del carrusel */
+        .resource-carousel {
+            margin-top: 60px;
+        }
+        
+        /* Mejorar el botón del popup para que respete el estilo general */
+        .popup button {
+            background-color: #ffcc00;
+            color: #333;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 15px;
+            font-size: 1rem;
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .popup button:hover {
+            background-color: #e6b800;
+            color: #222;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+        }
+        body.dark-mode .popup button {
+            background-color: #e6b800;
+            color: #222;
+        }
+        body.dark-mode .popup button:hover {
+            background-color: #ffcc00;
+            color: #222;
+        }
+        
+        /* Estilos para el popup */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #333;
+            color: #fff;
+            border: 2px solid #ffcc00;
+            border-radius: 10px;
+            padding: 20px;
+            z-index: 1001;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        body.dark-mode .popup {
+            background-color: #222;
+            color: #fff;
+            border-color: #e6b800;
+        }
+        
+        body:not(.dark-mode) .popup {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        /* Estilos para el carrusel de imágenes */
+        .carousel {
+            margin-top: 30px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .carousel-item img {
+            height: 250px;
+            object-fit: cover;
+        }
+        
+        /* Estilos para las tarjetas de características */
+        .feature-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            transition: transform 0.3s, box-shadow 0.3s;
+            background-color: white;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-icon {
+            font-size: 2rem;
+            color: #ffcc00;
+            margin-bottom: 15px;
+        }
+        
+        /* Overlay para el fondo cuando el popup está activo */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+        }
+        
+        /* Animación flotante para elementos */
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        /* Mejora en el modo oscuro para las tarjetas y el carrusel */
+        body.dark-mode .resource-card {
+            background-color: #2d2d2d;
+            color: #fff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        body.dark-mode .resource-content h3 {
+            color: #fff;
+        }
+        
+        body.dark-mode .resource-content p {
+            color: #ddd;
+        }
+        
+        body.dark-mode .feature-card {
+            background-color: #2d2d2d;
+            border-color: #444;
+            color: #fff;
+        }
+        
+        body.dark-mode .feature-card h3 {
+            color: #fff;
+        }
+        
+        body.dark-mode .feature-card p {
+            color: #ddd;
+        }
+        
+        /* Media queries completamente mejorados */
+        @media (max-width: 1920px) {
+            h1.animate__animated.animate__fadeInDown {
+                font-size: 2.5rem;
+            }
+            .text-center {
+                padding-top: 80px;
+            }
+        }
+        
+        @media (max-width: 1366px) {
+            h1.animate__animated.animate__fadeInDown {
+                font-size: 2.2rem;
+            }
+            .text-center {
+                padding-top: 70px;
+            }
+            .resource-carousel {
+                max-width: 90%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            h1.animate__animated.animate__fadeInDown {
+                font-size: 1.8rem;
+            }
+            .text-center {
+                padding-top: 50px;
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+            .container.mt-4 {
+                padding: 0;
+                width: 100%;
+                max-width: 100vw;
+                overflow-x: hidden;
+            }
+            p.mb-4 {
+                font-size: 0.9rem;
+                max-width: 100%;
+            }
+            .row {
+                margin-left: 0;
+                margin-right: 0;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1.animate__animated.animate__fadeInDown {
+                font-size: 1.4rem;
+                margin-top: 10px;
+                margin-bottom: 15px;
+                width: 100%;
+            }
+            .text-center {
+                padding-top: 30px;
+                text-align: center;
+                width: 100%;
+            }
+            .text-center p {
+                font-size: 0.85rem;
+                width: 100%;
+            }
+            .resource-carousel {
+                max-width: 100%;
+                margin-left: 5px;
+                margin-right: 5px;
+            }
+            .resource-card {
+                padding: 15px 10px;
+            }
+            .feature-card {
+                margin-bottom: 10px;
+            }
+            .btn {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Estilos para el cursor personalizado (ensure default is hidden) */
+        html.cursor-enabled,
+        html.cursor-enabled body,
+        html.cursor-enabled *,
+        body.cursor-enabled,
+        body.cursor-enabled * {
+            cursor: none !important;
+        }
+        /* ... rest of cursor styles from previous turn are fine if they are for the elements themselves ... */
+        /* ... but the main definition is now in style.css ... */
+        /* Ensure these local styles don't conflict or remove if fully reliant on style.css */
+        .custom-cursor,
+        .custom-cursor-outline {
+            /* These will be styled by style.css, ensure no conflicting properties here unless overriding */
+            /* display: none; by default, JS will show them */
+        }
+    </style>
 </head>
-<body>
-    <div class="text-center">
-        <h1>¡Bienvenido!</h1>
-        <p>Selecciona un ejercicio de la barra izquierda para comenzar</p>
+<body class="dark-mode"> <!-- cursor-enabled class will be managed by JS -->
+    <!-- Hello Bar con botón de cierre -->
+    <div class="hello-bar">
+        <span id="hello-bar-text">¡Terminamos ya el 20 de Mayo!</span>
+        <button class="hello-bar-close" id="hello-bar-close">
+            <i class="fas fa-times"></i>
+        </button>
     </div>
+    
+    <!-- Overlay para fondo oscuro -->
+    <div class="overlay" id="overlay"></div>
+    
+    <!-- Popup -->
+    <div class="popup" id="welcome-popup">
+        <h3><i class="fas fa-graduation-cap"></i> ¡Bienvenido al curso de Lenguajes de Marcas!</h3>
+        <p>Has completado con éxito la mayor parte del curso. ¡Ya queda poco para terminar!</p>
+        <p>Explora los ejercicios de cada trimestre en el menú lateral.</p>
+        <button id="popup-close">Entendido</button>
+    </div>
+
+    <div class="container mt-4">
+        <div class="text-center">
+            <h1 class="animate__animated animate__fadeInDown">¡Bienvenido!</h1>
+            <p class="mb-4 animate__animated animate__fadeIn animate__delay-1s">Selecciona un ejercicio de la barra izquierda para comenzar</p>
+           <!-- Carousel de recursos útiles para insertar en default.html -->
+<div id="resourcesCarousel" class="carousel slide mt-4 resource-carousel" data-bs-ride="carousel" data-bs-interval="5000">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#resourcesCarousel" data-bs-slide-to="0" class="active"></button>
+        <button type="button" data-bs-target="#resourcesCarousel" data-bs-slide-to="1"></button>
+        <button type="button" data-bs-target="#resourcesCarousel" data-bs-slide-to="2"></button>
+        <button type="button" data-bs-target="#resourcesCarousel" data-bs-slide-to="3"></button>
+        <button type="button" data-bs-target="#resourcesCarousel" data-bs-slide-to="4"></button>
+    </div>
+    <div class="carousel-inner">
+        <!-- Recurso 1: W3Schools -->
+        <div class="carousel-item active">
+            <div class="resource-card">
+                <div class="resource-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <div class="resource-content">
+                    <h3>W3Schools</h3>
+                    <p>Tutoriales completos sobre HTML, CSS, JavaScript y más. Incluye ejemplos prácticos y ejercicios.</p>
+                    <div class="resource-tags">
+                        <span class="tag">HTML</span>
+                        <span class="tag">CSS</span>
+                        <span class="tag">JavaScript</span>
+                    </div>
+                    <a href="https://www.w3schools.com/" target="_blank" class="resource-button">
+                        Visitar recurso <i class="fas fa-external-link-alt"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recurso 2: MDN Web Docs -->
+        <div class="carousel-item">
+            <div class="resource-card">
+                <div class="resource-icon">
+                    <i class="fab fa-firefox-browser"></i>
+                </div>
+                <div class="resource-content">
+                    <h3>MDN Web Docs</h3>
+                    <p>Documentación oficial y guías para desarrolladores web. Recursos avanzados y actualizados.</p>
+                    <div class="resource-tags">
+                        <span class="tag">HTML5</span>
+                        <span class="tag">CSS3</span>
+                        <span class="tag">JavaScript</span>
+                    </div>
+                    <a href="https://developer.mozilla.org/es/" target="_blank" class="resource-button">
+                        Visitar recurso <i class="fas fa-external-link-alt"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recurso 3: CodePen -->
+        <div class="carousel-item">
+            <div class="resource-card">
+                <div class="resource-icon">
+                    <i class="fab fa-codepen"></i>
+                </div>
+                <div class="resource-content">
+                    <h3>CodePen</h3>
+                    <p>Plataforma para crear y probar código HTML, CSS y JavaScript online. Perfecto para practicar.</p>
+                    <div class="resource-tags">
+                        <span class="tag">Playground</span>
+                        <span class="tag">Ejemplos</span>
+                        <span class="tag">Inspiración</span>
+                    </div>
+                    <a href="https://codepen.io/" target="_blank" class="resource-button">
+                        Visitar recurso <i class="fas fa-external-link-alt"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recurso 4: CSS-Tricks -->
+        <div class="carousel-item">
+            <div class="resource-card">
+                <div class="resource-icon">
+                    <i class="fas fa-paint-brush"></i>
+                </div>
+                <div class="resource-content">
+                    <h3>CSS-Tricks</h3>
+                    <p>Artículos, tutoriales y trucos sobre CSS. Especializado en diseño y maquetación web.</p>
+                    <div class="resource-tags">
+                        <span class="tag">CSS</span>
+                        <span class="tag">Flexbox</span>
+                        <span class="tag">Grid</span>
+                    </div>
+                    <a href="https://css-tricks.com/" target="_blank" class="resource-button">
+                        Visitar recurso <i class="fas fa-external-link-alt"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recurso 5: WordPress -->
+        <div class="carousel-item">
+            <div class="resource-card">
+                <div class="resource-icon">
+                    <i class="fab fa-wordpress"></i>
+                </div>
+                <div class="resource-content">
+                    <h3>WordPress.org</h3>
+                    <p>Documentación oficial, plugins y temas para WordPress. Incluye guías de instalación y uso.</p>
+                    <div class="resource-tags">
+                        <span class="tag">WordPress</span>
+                        <span class="tag">CMS</span>
+                        <span class="tag">Temas</span>
+                    </div>
+                    <a href="https://es.wordpress.org/" target="_blank" class="resource-button">
+                        Visitar recurso <i class="fas fa-external-link-alt"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#resourcesCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#resourcesCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+    </button>
+</div>
+
+<!-- Estilos CSS para el carousel de recursos -->
+<style>
+.resource-carousel {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    margin: 30px auto;
+    max-width: 800px;
+    background: transparent;
+}
+
+.resource-card {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    min-height: 200px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    margin: 10px 20px;
+}
+
+.resource-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.resource-icon {
+    background-color: #ffcc00;
+    color: #333;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    margin-right: 20px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(255, 204, 0, 0.3);
+    transition: all 0.3s;
+}
+
+.resource-card:hover .resource-icon {
+    transform: scale(1.1) rotate(10deg);
+    box-shadow: 0 6px 15px rgba(255, 204, 0, 0.4);
+}
+
+.resource-content {
+    flex: 1;
+}
+
+.resource-content h3 {
+    color: #333;
+    margin-bottom: 10px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.resource-content p {
+    color: #666;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.resource-tags {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.tag {
+    background-color: #f0f0f0;
+    color: #666;
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    transition: all 0.3s;
+}
+
+.resource-card:hover .tag {
+    background-color: #ffcc00;
+    color: #333;
+}
+
+.resource-button {
+    display: inline-block;
+    background-color: #ffcc00;
+    color: #333;
+    padding: 8px 16px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+    transition: all 0.3s;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.resource-button i {
+    margin-left: 5px;
+    transition: transform 0.3s;
+}
+
+.resource-button:hover {
+    background-color: #e6b800;
+    color: #333;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
+}
+
+.resource-button:hover i {
+    transform: translateX(3px);
+}
+
+.carousel-control-prev, .carousel-control-next {
+    width: 10%;
+}
+
+.carousel-control-prev-icon, .carousel-control-next-icon {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    padding: 15px;
+}
+
+.carousel-indicators {
+    bottom: -5px;
+}
+
+.carousel-indicators button {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin: 0 5px;
+    background-color: #ccc;
+    border: none;
+}
+
+.carousel-indicators .active {
+    background-color: #ffcc00;
+}
+
+/* Modo oscuro */
+body.dark-mode .resource-card {
+    background-color: #2d2d2d;
+    color: #fff;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .resource-content h3 {
+    color: #fff;
+}
+
+body.dark-mode .resource-content p {
+    color: #ddd;
+}
+
+body.dark-mode .tag {
+    background-color: #444;
+    color: #ddd;
+}
+
+body.dark-mode .resource-card:hover .tag {
+    background-color: #e6b800;
+    color: #333;
+}
+
+/* Animación para el carousel */
+.carousel-item {
+    transition: transform 0.6s ease-in-out;
+}
+
+@media (max-width: 768px) {
+    .resource-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+    }
+    
+    .resource-icon {
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+    
+    .resource-tags {
+        justify-content: center;
+    }
+}
+</style>
+            
+            <h2 class="mt-5 mb-4 animate__animated animate__fadeIn animate__delay-2s">Mejoras implementadas</h2>
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon floating">
+                            <i class="fas fa-mouse-pointer"></i>
+                        </div>
+                        <h3>Cursor personalizado</h3>
+                        <p>El cursor cambia a un icono de flecha cuando navegas por la página</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon floating">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <h3>Popup de bienvenida</h3>
+                        <p>Se muestra un mensaje emergente a los 5 segundos de cargar la página</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon floating">
+                            <i class="fas fa-ban"></i>
+                        </div>
+                        <h3>Protección de contenido</h3>
+                        <p>El texto de la web no puede ser copiado mediante Ctrl+C</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-3">
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon floating">
+                            <i class="fas fa-images"></i>
+                        </div>
+                        <h3>Carrusel de imágenes</h3>
+                        <p>Galería deslizante con imágenes relacionadas al curso</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon floating">
+                            <i class="fas fa-bullhorn"></i>
+                        </div>
+                        <h3>Hello Bar</h3>
+                        <p>Barra de anuncio superior con fecha de finalización del curso</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon floating">
+                            <i class="fas fa-magic"></i>
+                        </div>
+                        <h3>Animaciones</h3>
+                        <p>Elementos animados usando CSS y Animate.css</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-5">
+                <button id="toggle-cursor" class="btn btn-warning me-2">Desactivar cursor personalizado</button>
+                <button id="show-popup" class="btn btn-warning me-2">Mostrar popup</button>
+                <button id="toggle-hellobar" class="btn btn-warning">Mostrar/Ocultar Hello Bar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts de Bootstrap y JavaScript personalizado -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Script para prevenir copia de texto
+        document.addEventListener('copy', function(event) {
+            event.preventDefault();
+            alert('¡No se permite copiar el contenido de esta página!');
+        });
+        
+        // Comprobar si el usuario ya ha visto el popup
+        function checkPopupSeen() {
+            return localStorage.getItem('welcomePopupSeen') === 'true';
+        }
+        
+        // Marcar el popup como visto
+        function markPopupAsSeen() {
+            localStorage.setItem('welcomePopupSeen', 'true');
+        }
+        
+        // Mostrar popup solo si no se ha visto antes
+        setTimeout(function() {
+            if (!checkPopupSeen()) {
+                document.getElementById('welcome-popup').style.display = 'block';
+                document.getElementById('overlay').style.display = 'block';
+            }
+        }, 5000);
+        
+        // Cerrar popup al hacer clic en el botón y guardar estado
+        document.getElementById('popup-close').addEventListener('click', function() {
+            document.getElementById('welcome-popup').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+            markPopupAsSeen(); // Guardar que ya ha sido visto
+        });
+        
+        // Mostrar popup al hacer clic en el botón (sin marcar como visto para permitir verlo de nuevo)
+        document.getElementById('show-popup').addEventListener('click', function() {
+            document.getElementById('welcome-popup').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+        });
+        
+        // Actualizar texto del botón para reflejar su función real
+        document.addEventListener('DOMContentLoaded', function() {
+            const showPopupBtn = document.getElementById('show-popup');
+            if (showPopupBtn) {
+                if (checkPopupSeen()) {
+                    showPopupBtn.textContent = "Mostrar popup de bienvenida";
+                } else {
+                    showPopupBtn.textContent = "Mostrar popup";
+                }
+            }
+        });
+        
+        // Mostrar/ocultar Hello Bar
+        function showHelloBar() {
+            const helloBar = document.querySelector('.hello-bar');
+            helloBar.style.display = 'block';
+            
+            // Animación de texto desplazándose
+            const text = document.getElementById('hello-bar-text');
+            let position = -text.offsetWidth;
+            const animation = setInterval(function() {
+                if (position > window.innerWidth) {
+                    position = -text.offsetWidth;
+                }
+                position += 2;
+                text.style.transform = `translateX(${position}px)`;
+            }, 10);
+            
+            // Guardar el ID de la animación para poder detenerla
+            helloBar.dataset.animationId = animation;
+            
+            // Ocultar automáticamente después de 5 segundos
+            setTimeout(function() {
+                helloBar.style.display = 'none';
+                clearInterval(parseInt(helloBar.dataset.animationId));
+            }, 8000);
+        }
+        
+        // Mostrar Hello Bar al cargar la página (con un pequeño retraso)
+        setTimeout(showHelloBar, 1000);
+        
+        // Botón de cierre para la Hello Bar
+        document.getElementById('hello-bar-close').addEventListener('click', function() {
+            const helloBar = document.querySelector('.hello-bar');
+            helloBar.style.display = 'none';
+            // Detener la animación
+            clearInterval(parseInt(helloBar.dataset.animationId));
+        });
+        
+        // Mostrar popup al hacer clic en el botón
+        document.getElementById('show-popup').addEventListener('click', function() {
+            document.getElementById('welcome-popup').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+        });
+        
+        // Toggle para el Hello Bar
+        document.getElementById('toggle-hellobar').addEventListener('click', function() {
+            const helloBar = document.querySelector('.hello-bar');
+            if (helloBar.style.display === 'none') {
+                showHelloBar();
+            } else {
+                helloBar.style.display = 'none';
+                // Detener la animación
+                clearInterval(parseInt(helloBar.dataset.animationId));
+            }
+        });
+        
+        // Sincronización del modo oscuro entre ventanas
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.type === 'toggleDarkMode') {
+                if (event.data.darkMode) {
+                    document.body.classList.add('dark-mode');
+                } else {
+                    document.body.classList.remove('dark-mode');
+                }
+                
+                // Actualizar estilos del popup según el modo
+                updatePopupStyles();
+            }
+        });
+        
+        // Aplicar el modo oscuro guardado en localStorage al cargar
+        document.addEventListener('DOMContentLoaded', function() {
+            const isDarkMode = localStorage.getItem('darkMode') === 'true';
+            if (isDarkMode) {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+            
+            // Notificar al padre del iframe sobre nuestro estado de modo oscuro
+            window.parent.postMessage({
+                type: 'darkModeStatus',
+                darkMode: document.body.classList.contains('dark-mode')
+            }, '*');
+            
+            // Inicializar estilos del popup
+            updatePopupStyles();
+        });
+        
+        // Función para actualizar estilos del popup según el modo
+        function updatePopupStyles() {
+            const popup = document.getElementById('welcome-popup');
+            if (!popup) return;
+            
+            if (document.body.classList.contains('dark-mode')) {
+                popup.style.backgroundColor = '#222';
+                popup.style.color = '#fff';
+                popup.style.borderColor = '#e6b800';
+            } else {
+                popup.style.backgroundColor = '#f5f5f5';
+                popup.style.color = '#333';
+                popup.style.borderColor = '#ffcc00';
+            }
+        }
+    </script>
 </body>
 </html>
