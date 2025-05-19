@@ -90,6 +90,32 @@ const ChatbotLogic = {
             const searchInput = document.getElementById('search-input');
             if (searchInput) {
                 searchInput.value = searchTerm;
+                
+                // Configurar listener para recibir resultados
+                const handleSearchResults = (event) => {
+                    if (event.detail && event.detail.type === 'searchCompleted') {
+                        // Recibimos resultados, actualizar mensaje
+                        const results = event.detail.results;
+                        if (results && results.count > 0) {
+                            window.ChatbotUI.replaceLastBotMessage(
+                                `Encontré ${results.count} resultado(s) para "${searchTerm}":\n` +
+                                results.items.map((item, i) => `${i+1}. ${item}`).join('\n')
+                            );
+                        } else {
+                            window.ChatbotUI.replaceLastBotMessage(
+                                `No encontré resultados para "${searchTerm}". Intenta con otros términos.`
+                            );
+                        }
+                        
+                        // Eliminar listener
+                        document.removeEventListener('searchResult', handleSearchResults);
+                    }
+                };
+                
+                // Registrar listener para recibir resultados
+                document.addEventListener('searchResult', handleSearchResults);
+                
+                // Ejecutar búsqueda
                 window.performSearch();
                 return `Buscando "${searchTerm}"...`;
             }

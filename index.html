@@ -983,249 +983,183 @@ body:not(.dark-mode) .bookmark-empty {
 .notification-error {
     background-color: #F44336;
 }
-</style>
 
-<!-- Hacer que la función de búsqueda esté disponible globalmente para el chatbot y notifique resultados -->
-<script>
-window.performSearch = function() {
-    console.log("Ejecutando búsqueda global");
-    const searchInput = document.getElementById('search-input');
-    const searchOverlay = document.getElementById('search-overlay');
-    const searchResultsContent = document.getElementById('search-results-content');
-    const closeButton = document.getElementById('search-modal-close');
-    
-    // Verificar que existan todos los elementos necesarios
-    if (!searchInput || !searchOverlay || !searchResultsContent || !closeButton) {
-        console.error("Faltan elementos críticos para la búsqueda");
-        return;
-    }
-    
-    // Limpiar resultados anteriores
-    searchResultsContent.innerHTML = '';
-    
-    // Obtener valor de búsqueda
-    const searchTerm = searchInput.value.trim().toLowerCase();
-    
-    if (searchTerm.length < 2) {
-        console.log("Término de búsqueda demasiado corto");
-        return;
-    }
-    
-    // Filtros actuales
-    const trimestreFilter = document.getElementById('filter-trimestre')?.value || 'all';
-    const tipoFilter = document.getElementById('filter-tipo')?.value || 'all';
-    
-    // Buscar en todos los enlaces del menú
-    let results = [];
-    document.querySelectorAll('.menu-item a').forEach(link => {
-        const title = link.textContent.trim();
-        const href = link.getAttribute('href');
-        const trimestre = detectTrimestre(link);
-        const tipo = detectTipo(link);
-        
-        // Verificar si coincide con los filtros
-        const matchesTrimestre = trimestreFilter === 'all' || trimestre === trimestreFilter;
-        const matchesTipo = tipoFilter === 'all' || tipo === tipoFilter;
-        
-        // Verificar si coincide con el término de búsqueda
-        const matchesSearch = title.toLowerCase().includes(searchTerm) || 
-                             href.toLowerCase().includes(searchTerm);
-        
-        if (matchesSearch && matchesTrimestre && matchesTipo) {
-            results.push({
-                title,
-                href,
-                trimestre,
-                tipo,
-                element: link
-            });
-        }
-    });
-    
-    // Guardar resultados para el chatbot
-    window.lastSearchResults = {
-        term: searchTerm,
-        count: results.length,
-        items: results.map(r => r.title)
-    };
-    
-    // Mostrar resultados en el modal
-    if (results.length > 0) {
-        results.forEach(result => {
-            const resultItem = document.createElement('div');
-            resultItem.className = 'search-result-item';
-            
-            const resultInfo = document.createElement('div');
-            resultInfo.className = 'result-info';
-            
-            const resultTitle = document.createElement('div');
-            resultTitle.className = 'result-title';
-            resultTitle.textContent = result.title;
-            
-            const resultPath = document.createElement('div');
-            resultPath.className = 'result-path';
-            resultPath.textContent = `Trimestre ${result.trimestre} › ${result.tipo}`;
-            
-            resultInfo.appendChild(resultTitle);
-            resultInfo.appendChild(resultPath);
-            
-            const resultActions = document.createElement('div');
-            resultActions.className = 'result-actions';
-            
-            // Botón para abrir
-            const openButton = document.createElement('button');
-            openButton.innerHTML = '<i class="fas fa-external-link-alt"></i> Abrir';
-            openButton.title = 'Abrir ejercicio';
-            openButton.addEventListener('click', () => {
-                document.querySelector('iframe[name="contentFrame"]').src = result.href;
-                searchOverlay.style.display = 'none';
-            });
-            
-            // Botón para añadir a marcadores
-            const bookmarkButton = document.createElement('button');
-            bookmarkButton.innerHTML = '<i class="fas fa-bookmark"></i> Guardar';
-            bookmarkButton.title = 'Añadir a marcadores';
-            bookmarkButton.addEventListener('click', () => {
-                if (typeof addToBookmarks === 'function') {
-                    addToBookmarks(result.title, result.href, result.trimestre, result.tipo);
-                }
-            });
-            
-            resultActions.appendChild(openButton);
-            resultActions.appendChild(bookmarkButton);
-            
-            resultItem.appendChild(resultInfo);
-            resultItem.appendChild(resultActions);
-            
-            searchResultsContent.appendChild(resultItem);
-        });
-    } else {
-        // Sin resultados
-        const noResults = document.createElement('div');
-        noResults.className = 'search-no-results';
-        noResults.innerHTML = '<i class="fas fa-search"></i> No se encontraron resultados para "<strong>' + searchTerm + '</strong>"';
-        searchResultsContent.appendChild(noResults);
-    }
-    
-    // Mostrar el overlay con animación
-    searchOverlay.style.display = 'flex';
-    
-    // Asegurar que el botón de cierre funcione correctamente
-    closeButton.addEventListener('click', function() {
-        searchOverlay.style.display = 'none';
-    });
-    
-    // Disparar evento para notificar resultados al chatbot
-    setTimeout(() => {
-        document.dispatchEvent(new CustomEvent('searchResult', { 
-            detail: { 
-                type: 'searchCompleted',
-                results: window.lastSearchResults
-            }
-        }));
-    }, 100);
-    
-    // Funciones auxiliares para detectar el trimestre y tipo
-    function detectTrimestre(linkElement) {
-        // Buscar hacia arriba en el DOM hasta encontrar el trimestre
-        let current = linkElement;
-        while (current && !current.classList.contains('menu-item')) {
-            current = current.parentElement;
-        }
-        
-        if (current) {
-            const trimestreHeader = current.querySelector('.sidebar_h1');
-            if (trimestreHeader) {
-                const text = trimestreHeader.textContent.toLowerCase();
-                if (text.includes('trimestre 1')) return '1';
-                if (text.includes('trimestre 2')) return '2';
-                if (text.includes('trimestre 3')) return '3';
-            }
-        }
-        
-        // Intentar detectar por URL
-        const href = linkElement.getAttribute('href').toLowerCase();
-        if (href.includes('trimestre1') || href.includes('trimestre 1')) return '1';
-        if (href.includes('trimestre2') || href.includes('trimestre 2')) return '2';
-        if (href.includes('trimestre3') || href.includes('trimestre 3')) return '3';
-        
-        // Por defecto
-        return '1';
-    }
-    
-    function detectTipo(linkElement) {
-        // Buscar hacia arriba en el DOM hasta encontrar el tipo
-        let current = linkElement;
-        while (current && !current.classList.contains('submenu-item')) {
-            current = current.parentElement;
-        }
-        
-        if (current) {
-            const tipoHeader = current.querySelector('.sidebar_h2');
-            if (tipoHeader) {
-                const text = tipoHeader.textContent.toLowerCase();
-                if (text.includes('css')) return 'CSS';
-                if (text.includes('flexbox')) return 'FlexBox';
-                if (text.includes('formularios')) return 'Formularios';
-                if (text.includes('tablas')) return 'Tablas';
-                if (text.includes('xml') || text.includes('dtd') || text.includes('xsd')) return 'XML/DTD/XSD';
-                if (text.includes('wordpress')) return 'WordPress';
-                if (text.includes('xsl')) return 'XSL/XSLT';
-            }
-        }
-        
-        // Intentar detectar por URL o título
-        const href = linkElement.getAttribute('href').toLowerCase();
-        const title = linkElement.textContent.toLowerCase();
-        
-        if (href.includes('css') || title.includes('css')) return 'CSS';
-        if (href.includes('flex') || title.includes('flex')) return 'FlexBox';
-        if (href.includes('form') || title.includes('form')) return 'Formularios';
-        if (href.includes('tabla') || title.includes('tabla')) return 'Tablas';
-        if (href.includes('xml') || title.includes('xml') || 
-            href.includes('dtd') || title.includes('dtd') ||
-            href.includes('xsd') || title.includes('xsd')) return 'XML/DTD/XSD';
-        if (href.includes('wordpress') || title.includes('wordpress')) return 'WordPress';
-        if (href.includes('xsl') || title.includes('xsl') ||
-            href.includes('xslt') || title.includes('xslt')) return 'XSL/XSLT';
-        
-        // Por defecto
-        return 'Otros';
-    }
-};
+/* Estilos para el panel de configuración del chatbot */
+.chatbot-settings-panel {
+    position: absolute;
+    top: 60px;
+    right: 10px;
+    width: 300px;
+    background-color: #333;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    z-index: 1010;
+    display: none;
+    overflow: hidden;
+    border: 1px solid #444;
+}
 
-// Agregar el evento al botón de búsqueda para usar la función global
-document.addEventListener('DOMContentLoaded', function() {
-    const searchButton = document.getElementById('search-button');
-    const searchInput = document.getElementById('search-input');
-    
-    if (searchButton) {
-        searchButton.addEventListener('click', window.performSearch);
-    }
-    
-    if (searchInput) {
-        searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                window.performSearch();
-            }
-        });
-    }
-});
-</script>
+.settings-header {
+    background-color: #444;
+    padding: 12px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #555;
+}
 
-<!-- Overlay de búsqueda - Correcto -->
-<div class="search-overlay" id="search-overlay">
-    <div class="search-results-modal">
-        <div class="search-modal-header">
-            <div class="search-modal-title">Resultados de búsqueda</div>
-            <button class="search-modal-close" id="search-modal-close"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="search-results-content" id="search-results-content"></div>
-    </div>
-</div>
+.settings-header h3 {
+    color: #fff;
+    margin: 0;
+    font-size: 16px;
+}
 
-<style>
-/* Agregar/corregir estilos específicos para el overlay de búsqueda */
+.settings-close {
+    background: none;
+    border: none;
+    color: #ccc;
+    cursor: pointer;
+    font-size: 16px;
+    transition: color 0.2s;
+}
+
+.settings-close:hover {
+    color: #ffcc00;
+}
+
+.settings-content {
+    padding: 15px;
+}
+
+.settings-section {
+    margin-bottom: 20px;
+}
+
+.settings-section h4 {
+    font-size: 14px;
+    color: #ffcc00;
+    margin-bottom: 10px;
+}
+
+.settings-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.settings-buttons button {
+    background-color: #444;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s;
+}
+
+.settings-buttons button:hover {
+    background-color: #555;
+}
+
+.settings-buttons button.active {
+    background-color: #ffcc00;
+    color: #333;
+}
+
+.font-button, .history-button, .reset-position-button {
+    display: flex;
+    align-items: center;
+}
+
+.font-button i, .history-button i, .reset-position-button i {
+    margin-right: 5px;
+}
+
+/* Estilos para sugerencias del chatbot */
+.chatbot-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 15px;
+    background-color: #2a2a2a;
+    border-top: 1px solid #444;
+}
+
+.chatbot-suggestion-btn {
+    background-color: #444;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 150px;
+}
+
+.chatbot-suggestion-btn:hover {
+    background-color: #ffcc00;
+    color: #333;
+    transform: translateY(-2px);
+}
+
+/* Modo claro para el panel de configuración */
+body:not(.dark-mode) .chatbot-settings-panel {
+    background-color: #f5f5f5;
+    border-color: #ddd;
+}
+
+body:not(.dark-mode) .settings-header {
+    background-color: #e0e0e0;
+    border-bottom-color: #ddd;
+}
+
+body:not(.dark-mode) .settings-header h3 {
+    color: #333;
+}
+
+body:not(.dark-mode) .settings-close {
+    color: #666;
+}
+
+body:not(.dark-mode) .settings-section h4 {
+    color: #e6b800;
+}
+
+body:not(.dark-mode) .settings-buttons button {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+body:not(.dark-mode) .settings-buttons button:hover {
+    background-color: #d0d0d0;
+}
+
+body:not(.dark-mode) .settings-buttons button.active {
+    background-color: #ffcc00;
+    color: #333;
+}
+
+/* Modo claro para sugerencias */
+body:not(.dark-mode) .chatbot-suggestions {
+    background-color: #f0f0f0;
+    border-top-color: #ddd;
+}
+
+body:not(.dark-mode) .chatbot-suggestion-btn {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+body:not(.dark-mode) .chatbot-suggestion-btn:hover {
+    background-color: #ffcc00;
+}
+
+/* Overlay de búsqueda */
 .search-overlay {
     position: fixed;
     top: 0;
@@ -1283,7 +1217,6 @@ document.addEventListener('DOMContentLoaded', function() {
     overflow-y: auto;
 }
 
-/* Estilos para el mensaje de no resultados */
 .search-no-results {
     color: #ccc;
     text-align: center;
@@ -1315,417 +1248,325 @@ body:not(.dark-mode) .search-no-results {
 }
 </style>
 
-<!-- Script para gestionar los marcadores -->
-<script>
-// Sistema de marcadores - Versión simplificada
-document.addEventListener('DOMContentLoaded', function() {
-    // Referencias a elementos del DOM
-    const bookmarksTitle = document.querySelector('.bookmarks-title');
-    const bookmarksList = document.querySelector('.bookmarks-list');
-    const bookmarksCount = document.querySelector('.bookmarks-count');
-    
-    // Función para mostrar notificaciones
-    function showNotification(message, type = 'info') {
-        // Crear div de notificación
-        const notification = document.createElement('div');
-        notification.className = `notification notification-${type}`;
-        
-        // Icono según tipo
-        let icon = 'info-circle';
-        if (type === 'success') icon = 'check-circle';
-        if (type === 'warning') icon = 'exclamation-triangle';
-        if (type === 'error') icon = 'times-circle';
-        
-        notification.innerHTML = `<i class="fas fa-${icon}"></i> ${message}`;
-        
-        // Añadir al body
-        document.body.appendChild(notification);
-        
-        // Mostrar con animación
-        setTimeout(() => {
-            notification.classList.add('show');
-        }, 10);
-        
-        // Ocultar después de 3 segundos
-        setTimeout(() => {
-            notification.classList.remove('show');
-            setTimeout(() => {
-                document.body.removeChild(notification);
-            }, 300);
-        }, 3000);
-    }
-    
-    // Toggle sección de marcadores
-    if (bookmarksTitle && bookmarksList) {
-        bookmarksTitle.addEventListener('click', function() {
-            bookmarksList.classList.toggle('active');
-            
-            // Rotar flecha si existe
-            const flecha = this.querySelector('.flecha');
-            if (flecha) {
-                this.classList.toggle('active');
-            }
-        });
-    }
-    
-    // Cargar y renderizar marcadores
-    function loadBookmarks() {
-        const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
-        
-        if (!bookmarksList || !bookmarksCount) return;
-        
-        // Actualizar contador
-        bookmarksCount.textContent = `(${bookmarks.length})`;
-        
-        // Limpiar lista
-        bookmarksList.innerHTML = '';
-        
-        // Si no hay marcadores, mostrar mensaje
-        if (bookmarks.length === 0) {
-            const emptyMsg = document.createElement('div');
-            emptyMsg.className = 'bookmark-empty';
-            emptyMsg.innerHTML = '<i class="fas fa-info-circle"></i> No tienes marcadores guardados.';
-            bookmarksList.appendChild(emptyMsg);
-            return;
-        }
-        
-        // Ordenar marcadores por fecha (más recientes primero)
-        bookmarks.sort((a, b) => new Date(b.date) - new Date(a.date));
-        
-        // Crear elementos de marcadores
-        bookmarks.forEach((bookmark, index) => {
-            const bookmarkItem = document.createElement('div');
-            bookmarkItem.className = 'bookmark-item';
-            
-            const bookmarkTitle = document.createElement('div');
-            bookmarkTitle.className = 'bookmark-title';
-            bookmarkTitle.textContent = bookmark.title;
-            bookmarkTitle.title = `${bookmark.title} - Trimestre ${bookmark.trimestre}, ${bookmark.tipo}`;
-            
-            const bookmarkActions = document.createElement('div');
-            bookmarkActions.className = 'bookmark-actions';
-            
-            // Botón para abrir - CORREGIDO
-            const openBtn = document.createElement('button');
-            openBtn.innerHTML = '<i class="fas fa-external-link-alt"></i>';
-            openBtn.title = 'Abrir ejercicio';
-            openBtn.addEventListener('click', function() {
-                // Asegurar que el iframe exista y establecer la URL completa
-                const iframe = document.querySelector('iframe[name="contentFrame"]');
-                if (iframe) {
-                    // Normalizar la ruta eliminando barras diagonales iniciales si existen
-                    let normalizedHref = bookmark.href;
-                    if (normalizedHref.startsWith('\\')) {
-                        normalizedHref = normalizedHref.substring(1);
-                    }
-                    iframe.src = normalizedHref;
-                    console.log("Abriendo URL:", normalizedHref);
-                    
-                    // Mostrar notificación
-                    showNotification(`Abriendo "${bookmark.title}"`, 'info');
-                } else {
-                    console.error("No se encontró el iframe para mostrar el contenido");
-                    showNotification('Error al abrir el ejercicio', 'error');
-                }
-            });
-            
-            // Botón para eliminar
-            const deleteBtn = document.createElement('button');
-            deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
-            deleteBtn.title = 'Eliminar de marcadores';
-            deleteBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                removeBookmark(index);
-            });
-            
-            // Añadir botones a las acciones
-            bookmarkActions.appendChild(openBtn);
-            bookmarkActions.appendChild(deleteBtn);
-            
-            // Construir elemento de marcador
-            bookmarkItem.appendChild(bookmarkTitle);
-            bookmarkItem.appendChild(bookmarkActions);
-            
-            // Añadir a la lista
-            bookmarksList.appendChild(bookmarkItem);
-        });
-        
-        // Si hay marcadores y la lista no está visible, hacer parpadear el título
-        if (bookmarks.length > 0 && !bookmarksList.classList.contains('active')) {
-            bookmarksTitle.classList.add('has-bookmarks');
-            setTimeout(() => {
-                bookmarksTitle.classList.remove('has-bookmarks');
-            }, 2000);
-        }
-    }
-    
-    // Función para eliminar marcador
-    function removeBookmark(index) {
-        let bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
-        
-        if (index >= 0 && index < bookmarks.length) {
-            const removed = bookmarks.splice(index, 1)[0];
-            localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
-            loadBookmarks(); // Recargar la lista
-            showNotification(`"${removed.title}" eliminado de marcadores`, 'info');
-        }
-    }
-    
-    // Definir función global para añadir marcadores
-    window.addToBookmarks = function(title, href, trimestre, tipo) {
-        // Obtener marcadores actuales
-        let bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
-        
-        // Comprobar si ya existe este marcador
-        const exists = bookmarks.some(b => b.href === href);
-        
-        if (exists) {
-            showNotification('Este ejercicio ya está en tus marcadores', 'warning');
-            return;
-        }
-        
-        // Añadir nuevo marcador
-        bookmarks.push({
-            title: title,
-            href: href,
-            trimestre: trimestre,
-            tipo: tipo,
-            date: new Date().toISOString()
-        });
-        
-        // Guardar marcadores
-        localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
-        
-        // Actualizar vista
-        loadBookmarks();
-        
-        // Mostrar notificación
-        showNotification('Ejercicio añadido a marcadores', 'success');
-        
-        // Si la lista está cerrada, abrirla
-        if (bookmarksList && !bookmarksList.classList.contains('active')) {
-            bookmarksList.classList.add('active');
-            if (bookmarksTitle) bookmarksTitle.classList.add('active');
-        }
-    };
-    
-    // Cargar marcadores al iniciar
-    loadBookmarks();
-});
-</script>
-
-<!-- Estilos adicionales para marcadores -->
-<style>
-/* Efectos visuales para marcadores */
-.bookmarks-title.has-bookmarks {
-    animation: pulse-bookmark 1s infinite;
-}
-
-.bookmarks-list {
-    padding-left: 10px;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
-}
-
-.bookmarks-list.active {
-    max-height: 300px;
-    overflow-y: auto;
-    margin-top: 5px;
-    margin-bottom: 10px;
-}
-
-.bookmark-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 10px;
-    background-color: #2a2a2a;
-    border-radius: 5px;
-    margin-bottom: 5px;
-    transition: all 0.2s;
-}
-
-.bookmark-item:hover {
-    background-color: #444;
-    transform: translateX(5px);
-}
-
-.bookmark-title {
-    color: #fff;
-    font-size: 14px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 180px;
-}
-
-.bookmark-actions {
-    display: flex;
-    gap: 5px;
-}
-
-.bookmark-item button {
-    background: none;
-    border: none;
-    color: #ffcc00;
-    cursor: pointer;
-    font-size: 12px;
-    transition: all 0.2s;
-    padding: 5px;
-    border-radius: 3px;
-}
-
-.bookmark-item button:hover {
-    color: #fff;
-    background-color: rgba(255, 204, 0, 0.3);
-}
-
-.bookmark-empty {
-    padding: 10px;
-    color: #aaa;
-    font-style: italic;
-    text-align: center;
-    font-size: 12px;
-}
-
-@keyframes pulse-bookmark {
-    0% { opacity: 0.7; }
-body:not(.dark-mode) .bookmark-empty {
-    color: #777;ty: 0.7; }
-}
-
-/* Notificaciones mejoradas */-item {
-.notification {color: #f0f0f0;
-    position: fixed;
-    bottom: 20px;
-    right: 20px;ode) .bookmark-title {
-    background-color: #333;
-    color: white;
-    padding: 12px 20px;
-    border-radius: 8px;ookmark-item:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    z-index: 2000;
-    display: flex;
-    align-items: center;okmark-empty {
-    font-size: 14px;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.3s, transform 0.3s;
-}notification {
-    position: fixed;
-.notification.show {
-    opacity: 1;;
-    transform: translateY(0);
-}   color: white;
-    padding: 12px 20px;
-.notification i {: 8px;
-    margin-right: 8px;12px rgba(0, 0, 0, 0.2);
-    font-size: 16px;
-}   display: flex;
-    align-items: center;
-.notification-success {
-    background-color: #4CAF50;
-}   transform: translateY(20px);
-    transition: opacity 0.3s, transform 0.3s;
-.notification-info {
-    background-color: #2196F3;
-}notification.show {
-    opacity: 1;
-.notification-warning {eY(0);
-    background-color: #FF9800;
-}
-.notification i {
-.notification-error {;
-    background-color: #F44336;
-}
-</style>
-.notification-success {
-<!-- CARGAR LOS MÓDULOS DEL CHATBOT EN ORDEN CORRECTO -->
-<link rel="stylesheet" href="js/chatbot-styles.css">
-<script src="js/chatbot-data.js"></script>
-<script src="js/chatbot-logic.js"></script> 
-<script src="js/chatbot-ui.js"></script>
-<script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</script>});    }        console.error("Chatbot: No se encontraron los módulos necesarios");    } else {        });            }                }, Math.random() * 1000 + 500);                    window.ChatbotUI.addMessage(formattedResponse, 'bot');                    // Mostrar respuesta formateada                                        const formattedResponse = window.ChatbotLogic.formatMessage(response);                    // Formatear respuesta si contiene código                                        const response = window.ChatbotLogic.generateResponse(event.detail.message);                    // Generar respuesta                                        window.ChatbotUI.removeTypingIndicator();                    // Eliminar indicador de escritura                setTimeout(function() {                // Simular tiempo de respuesta                                window.ChatbotUI.showTypingIndicator();                // Mostrar indicador de escritura                                window.ChatbotUI.addMessage(event.detail.message, 'user');                // Mostrar mensaje del usuario            if (window.ChatbotLogic && event.detail && event.detail.message) {        document.addEventListener('chatbot-message-sent', function(event) {        // Configurar conexión entre módulos                }            }                chatbotContainer.classList.remove('dark-mode');            } else {                chatbotContainer.classList.add('dark-mode');            if (document.body.classList.contains('dark-mode')) {            // Aplicar modo oscuro si es necesario                        chatbotContainer.style.display = localStorage.getItem('chatbotOpen') === 'true' ? 'flex' : 'none';            // Forzar actualización de estilos        if (chatbotContainer) {                const chatbotMessages = document.getElementById('chatbot-messages');        const chatbotContainer = document.getElementById('chatbot-container');        // Asegurar que los estilos del chatbot se apliquen correctamente                }            console.error("Chatbot: Error al inicializar lógica");        } else {            console.log("Chatbot: Lógica inicializada correctamente");        if (window.ChatbotLogic.init()) {        // Inicializar lógica después                }            console.error("Chatbot: Error al inicializar UI");        } else {            console.log("Chatbot: UI inicializada correctamente");        if (window.ChatbotUI.init()) {        // Inicializar la UI primero                console.log("Chatbot: Módulos cargados correctamente");    if (window.ChatbotUI && window.ChatbotLogic) {    // Verificar que los módulos estén cargadosdocument.addEventListener('DOMContentLoaded', function() {// Script de inicialización inline para asegurar que los estilos se apliquen correctamente
-.notification-warning {
-    background-color: #FF9800;
-}
-
-.notification-error {
-    background-color: #F44336;
-}
-</style>
-
 <!-- CARGAR LOS MÓDULOS DEL CHATBOT EN ORDEN CORRECTO -->
 <link rel="stylesheet" href="js/chatbot-styles.css">
 <script src="js/chatbot-data.js"></script>
 <script src="js/chatbot-logic.js"></script> 
 <script src="js/chatbot-ui.js"></script>
 <script src="js/chatbot-init.js"></script>
+
+<!-- Hacer que la función de búsqueda esté disponible globalmente para el chatbot y notifique resultados -->
+<script>
+window.performSearch = function() {
+    console.log("Ejecutando búsqueda global");
+    const searchInput = document.getElementById('search-input');
+    const searchOverlay = document.getElementById('search-overlay');
+    const searchResultsContent = document.getElementById('search-results-content');
+    const closeButton = document.getElementById('search-modal-close');
+    
+    // Verificar que existan todos los elementos necesarios
+    if (!searchInput || !searchOverlay || !searchResultsContent || !closeButton) {
+        console.error("No se encontraron todos los elementos necesarios para la búsqueda");
+        return;
+    }
+    
+    // Limpiar resultados anteriores
+    searchResultsContent.innerHTML = '';
+    
+    // Obtener valor de búsqueda
+    const searchTerm = searchInput.value.trim().toLowerCase();
+    
+    if (searchTerm.length < 2) {
+        console.log("Término de búsqueda demasiado corto");
+        return;
+    }
+    
+    // Filtros actuales
+    const trimestreFilter = document.getElementById('filter-trimestre')?.value || 'all';
+    const tipoFilter = document.getElementById('filter-tipo')?.value || 'all';
+    
+    // Buscar en todos los enlaces del menú
+    let results = [];
+    document.querySelectorAll('.menu-item a').forEach(link => {
+        const title = link.textContent.trim().toLowerCase();
+        const href = link.getAttribute('href');
+        const trimestre = detectTrimestre(link);
+        const tipo = detectTipo(link);
+        
+        // Aplicar filtros
+        if ((trimestreFilter === 'all' || trimestre === trimestreFilter) &&
+            (tipoFilter === 'all' || tipo.toLowerCase().includes(tipoFilter.toLowerCase()))) {
+            
+            // Verificar si coincide con la búsqueda
+            if (title.includes(searchTerm) || 
+                href.toLowerCase().includes(searchTerm) ||
+                tipo.toLowerCase().includes(searchTerm)) {
+                
+                results.push({
+                    title: title,
+                    href: href,
+                    trimestre: trimestre,
+                    tipo: tipo
+                });
+            }
+        }
+    });
+    
+    // Guardar resultados para el chatbot
+    window.lastSearchResults = {
+        term: searchTerm,
+        count: results.length,
+        items: results.map(r => r.title)
+    };
+    
+    // Mostrar resultados en el modal
+    if (results.length > 0) {
+        results.forEach(result => {
+            const resultItem = document.createElement('div');
+            resultItem.className = 'search-result-item';
+            
+            const resultDetails = document.createElement('div');
+            resultDetails.className = 'result-details';
+            
+            const resultTitle = document.createElement('div');
+            resultTitle.className = 'result-title';
+            resultTitle.textContent = result.title;
+            
+            const resultPath = document.createElement('div');
+            resultPath.className = 'result-path';
+            resultPath.textContent = `Trimestre ${result.trimestre} - ${result.tipo}`;
+            
+            const resultActions = document.createElement('div');
+            resultActions.className = 'result-actions';
+            
+            const openBtn = document.createElement('button');
+            openBtn.innerHTML = '<i class="fas fa-external-link-alt"></i> Abrir';
+            openBtn.addEventListener('click', function() {
+                document.querySelector('iframe[name="contentFrame"]').src = result.href;
+                searchOverlay.style.display = 'none';
+            });
+            
+            const bookmarkBtn = document.createElement('button');
+            bookmarkBtn.innerHTML = '<i class="fas fa-bookmark"></i> Guardar';
+            bookmarkBtn.addEventListener('click', function() {
+                if (typeof window.addToBookmarks === 'function') {
+                    window.addToBookmarks(result.title, result.href, result.trimestre, result.tipo);
+                }
+                searchOverlay.style.display = 'none';
+            });
+            
+            resultActions.appendChild(openBtn);
+            resultActions.appendChild(bookmarkBtn);
+            
+            resultDetails.appendChild(resultTitle);
+            resultDetails.appendChild(resultPath);
+            resultDetails.appendChild(resultActions);
+            
+            resultItem.appendChild(resultDetails);
+            searchResultsContent.appendChild(resultItem);
+        });
+    } else {
+        // Sin resultados
+        const noResults = document.createElement('div');
+        noResults.className = 'search-no-results';
+        noResults.innerHTML = '<i class="fas fa-search"></i> No se encontraron resultados para "<strong>' + searchTerm + '</strong>"';
+        searchResultsContent.appendChild(noResults);
+    }
+    
+    // Mostrar el overlay con animación
+    searchOverlay.style.display = 'flex';
+    
+    // Asegurar que el botón de cierre funcione correctamente
+    closeButton.addEventListener('click', function() {
+        searchOverlay.style.display = 'none';
+    });
+    
+    // Disparar evento para notificar resultados al chatbot
+    setTimeout(() => {
+        document.dispatchEvent(new CustomEvent('searchResult', { 
+            detail: {
+                type: 'searchCompleted',
+                results: window.lastSearchResults
+            }
+        }));
+    }, 100);
+    
+    // Funciones auxiliares para detectar el trimestre y tipo
+    function detectTrimestre(linkElement) {
+        // Buscar hacia arriba en el DOM hasta encontrar el trimestre
+        let current = linkElement;
+        while (current && !current.classList.contains('menu-item')) {
+            current = current.parentElement;
+        }
+        
+        if (current) {
+            const headerText = current.querySelector('.sidebar_h1').textContent.trim();
+            if (headerText.includes('1')) return '1';
+            if (headerText.includes('2')) return '2';
+            if (headerText.includes('3')) return '3';
+        }
+        
+        // Intentar detectar por URL
+        const href = linkElement.getAttribute('href').toLowerCase();
+        if (href.includes('trimestre1') || href.includes('trimestre 1')) return '1';
+        if (href.includes('trimestre2') || href.includes('trimestre 2')) return '2';
+        if (href.includes('trimestre3') || href.includes('trimestre 3')) return '3';
+        
+        // Por defecto
+        return '1';
+    }
+    
+    function detectTipo(linkElement) {
+        // Buscar hacia arriba en el DOM hasta encontrar el tipo
+        let current = linkElement;
+        while (current && !current.classList.contains('submenu-item')) {
+            current = current.parentElement;
+        }
+        
+        if (current) {
+            const headerText = current.querySelector('.sidebar_h2').textContent.trim();
+            return headerText;
+        }
+        
+        // Intentar detectar por URL o título
+        const href = linkElement.getAttribute('href').toLowerCase();
+        const title = linkElement.textContent.toLowerCase();
+        
+        if (href.includes('css') || title.includes('css')) return 'CSS';
+        if (href.includes('flex') || title.includes('flex')) return 'FlexBox';
+        if (href.includes('form') || title.includes('form')) return 'Formularios';
+        if (href.includes('tabla') || title.includes('tabla')) return 'Tablas';
+        if (href.includes('xml') || title.includes('xml') || 
+            href.includes('dtd') || title.includes('dtd') ||
+            href.includes('xsd') || title.includes('xsd')) return 'XML/DTD/XSD';
+        if (href.includes('wordpress') || title.includes('wordpress')) return 'WordPress';
+        if (href.includes('xsl') || title.includes('xsl') ||
+            href.includes('xslt') || title.includes('xslt')) return 'XSL/XSLT';
+        
+        // Por defecto
+        return 'Otros';
+    }
+};
+
+// Agregar el evento al botón de búsqueda para usar la función global
+document.addEventListener('DOMContentLoaded', function() {
+    const searchButton = document.getElementById('search-button');
+    const searchInput = document.getElementById('search-input');
+    
+    if (searchButton) {
+        searchButton.addEventListener('click', window.performSearch);
+    }
+    
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                window.performSearch();
+            }
+        });
+    }
+});
+</script>
+
+<!-- Overlay de búsqueda -->
+<div class="search-overlay" id="search-overlay">
+    <div class="search-results-modal">
+        <div class="search-modal-header">
+            <div class="search-modal-title">Resultados de búsqueda</div>
+            <button class="search-modal-close" id="search-modal-close"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="search-results-content" id="search-results-content"></div>
+    </div>
+</div>
+
+<!-- Estilos para el overlay de búsqueda -->
+<style>
+.search-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.search-results-modal {
+    background-color: #333;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 800px;
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+}
+
+.search-modal-header {
+    background-color: #444;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #555;
+}
+
+.search-modal-title {
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.search-modal-close {
+    background: none;
+    border: none;
+    color: #ccc;
+    font-size: 18px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.search-modal-close:hover {
+    color: #ffcc00;
+}
+
+.search-results-content {
+    padding: 20px;
+    max-height: calc(80vh - 60px);
+    overflow-y: auto;
+}
+
+.search-no-results {
+    color: #ccc;
+    text-align: center;
+    padding: 20px;
+    font-style: italic;
+}
+
+/* Versión para modo claro */
+body:not(.dark-mode) .search-results-modal {
+    background-color: #fff;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+}
+
+body:not(.dark-mode) .search-modal-header {
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #ddd;
+}
+
+body:not(.dark-mode) .search-modal-title {
+    color: #333;
+}
+
+body:not(.dark-mode) .search-modal-close {
+    color: #666;
+}
+
+body:not(.dark-mode) .search-no-results {
+    color: #666;
+}
+</style>
+
+</body>
+</html>
