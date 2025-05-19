@@ -39,6 +39,19 @@ const ChatbotLogic = {
         for (const entry of window.chatbotData.knowledge) {
             for (const keyword of entry.keywords) {
                 if (lowerMessage.includes(keyword)) {
+                    // Manejar acciones especiales (Restaurado)
+                    if (entry.action === 'openTurboAsistente') {
+                        if (window.ChatbotUI && typeof window.ChatbotUI.showTurboAsistente === 'function') {
+                            window.ChatbotUI.showTurboAsistente();
+                            // Si la acción es abrir el modal, podemos devolver un mensaje específico o
+                            // simplemente dejar que la respuesta asociada (si existe) se muestre.
+                            // Por ahora, si hay una respuesta asociada, se mostrará.
+                            // Si no, se podría añadir un mensaje como "Abriendo el Turbo Asistente..."
+                        } else {
+                            console.warn("Función showTurboAsistente no encontrada en ChatbotUI.");
+                        }
+                    }
+
                     // Seleccionar respuesta aleatoria de este tema
                     const randomIndex = Math.floor(Math.random() * entry.responses.length);
                     return entry.responses[randomIndex];
@@ -94,16 +107,16 @@ const ChatbotLogic = {
                 // Configurar listener para recibir resultados
                 const handleSearchResults = (event) => {
                     if (event.detail && event.detail.type === 'searchCompleted') {
-                        // Recibimos resultados, actualizar mensaje
+                        // Recibimos resultados, actualizar mensaje para indicar que se completó
+                        // y que los resultados están en el modal.
                         const results = event.detail.results;
                         if (results && results.count > 0) {
                             window.ChatbotUI.replaceLastBotMessage(
-                                `Encontré ${results.count} resultado(s) para "${searchTerm}":\n` +
-                                results.items.map((item, i) => `${i+1}. ${item}`).join('\n')
+                                `Búsqueda completada para "${searchTerm}". Revisa los resultados en la ventana emergente.`
                             );
                         } else {
                             window.ChatbotUI.replaceLastBotMessage(
-                                `No encontré resultados para "${searchTerm}". Intenta con otros términos.`
+                                `No encontré resultados para "${searchTerm}" en la búsqueda. Intenta con otros términos.`
                             );
                         }
                         
@@ -117,7 +130,7 @@ const ChatbotLogic = {
                 
                 // Ejecutar búsqueda
                 window.performSearch();
-                return `Buscando "${searchTerm}"...`;
+                return `Buscando "${searchTerm}"... Los resultados aparecerán en una ventana emergente.`;
             }
         }
         
@@ -133,7 +146,8 @@ const ChatbotLogic = {
         // Buscar bloques de código (```código```
         if (text.includes('```')) {
             let parts = text.split('```');
-            let result = parts[0];
+            // Procesar la parte inicial antes del primer bloque de código
+            let result = parts[0].replace(/\n/g, '<br>');
             
             for (let i = 1; i < parts.length; i++) {
                 if (i % 2 === 1) { // Es un bloque de código
@@ -143,18 +157,21 @@ const ChatbotLogic = {
                     // Detectar lenguaje
                     if (codeBlock.startsWith('html') || codeBlock.startsWith('HTML')) {
                         language = 'html';
-                        codeBlock = codeBlock.substring(4);
+                        codeBlock = codeBlock.substring(4).trimStart(); // Eliminar 'html' y espacios iniciales
                     } else if (codeBlock.startsWith('css') || codeBlock.startsWith('CSS')) {
                         language = 'css';
-                        codeBlock = codeBlock.substring(3);
+                        codeBlock = codeBlock.substring(3).trimStart(); // Eliminar 'css' y espacios iniciales
                     } else if (codeBlock.startsWith('javascript') || codeBlock.startsWith('js')) {
                         language = 'javascript';
-                        codeBlock = codeBlock.substring(codeBlock.startsWith('javascript') ? 10 : 2);
+                        codeBlock = codeBlock.substring(codeBlock.startsWith('javascript') ? 10 : 2).trimStart();
                     } else if (codeBlock.startsWith('xml')) {
                         language = 'xml';
-                        codeBlock = codeBlock.substring(3);
+                        codeBlock = codeBlock.substring(3).trimStart();
                     }
                     
+                    // Escapar HTML dentro del bloque de código para evitar que se renderice
+                    const escapedCode = codeBlock.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
                     // Crear bloque de código HTML
                     result += `<div class="code-block">
                         <div class="code-header">
@@ -163,17 +180,18 @@ const ChatbotLogic = {
                                 <i class="fas fa-copy"></i> Copiar
                             </button>
                         </div>
-                        <pre><code class="language-${language}">${codeBlock}</code></pre>
+                        <pre><code class="language-${language}">${escapedCode}</code></pre>
                     </div>`;
-                } else {
-                    result += parts[i];
+                } else { // Es texto normal entre bloques de código o al final
+                    result += parts[i].replace(/\n/g, '<br>');
                 }
             }
             
             return result;
         }
         
-        // Si no hay código, reemplazar saltos de línea
+        // Si no hay bloques de código, simplemente reemplazar saltos de línea.
+        // Si el texto ya contiene HTML (ej. <a>), se preservará.
         return text.replace(/\n/g, '<br>');
     },
     

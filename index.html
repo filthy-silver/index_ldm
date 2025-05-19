@@ -32,6 +32,7 @@
                     </select>
                     <select id="filter-tipo">
                         <option value="all">Todos los tipos</option>
+                        <option value="html">HTML</option> <!-- Nueva opción -->
                         <option value="css">CSS</option>
                         <option value="flexbox">FlexBox</option>
                         <option value="form">Formularios</option>
@@ -298,13 +299,16 @@
             <i class="fas fa-robot"></i> Asistente del Curso
         </div>
         <div class="chatbot-controls">
-            <button class="chatbot-resize" id="chatbot-resize" title="Ampliar tamaño">
+            <button id="chatbot-turbo-btn" class="chatbot-control-btn" title="Turbo Asistente">
+                <i class="fas fa-rocket"></i>
+            </button>
+            <button class="chatbot-resize chatbot-control-btn" id="chatbot-resize" title="Ampliar tamaño">
                 <i class="fas fa-expand-alt"></i>
             </button>
-            <button class="chatbot-settings" id="chatbot-settings" title="Configuración">
+            <button class="chatbot-settings chatbot-control-btn" id="chatbot-settings" title="Configuración">
                 <i class="fas fa-cog"></i>
             </button>
-            <button class="chatbot-toggle" id="chatbot-toggle" title="Cerrar">
+            <button class="chatbot-toggle chatbot-control-btn" id="chatbot-toggle" title="Cerrar">
                 <i class="fas fa-times"></i>
             </button>
         </div>
@@ -332,6 +336,19 @@
 <button class="chatbot-button" id="chatbot-button">
     <i class="fas fa-comment-dots"></i>
 </button>
+
+<!-- Modal para el Turbo Asistente -->
+<div id="turbo-asistente-modal" class="turbo-asistente-modal">
+    <div class="turbo-asistente-modal-content">
+        <div class="turbo-asistente-modal-header">
+            <h2><i class="fas fa-rocket"></i> Turbo Asistente</h2>
+            <button id="turbo-asistente-modal-close" class="turbo-asistente-modal-close-btn">&times;</button>
+        </div>
+        <div class="turbo-asistente-modal-body">
+            <iframe id="turbo-asistente-iframe" src="about:blank" frameborder="0"></iframe>
+        </div>
+    </div>
+</div>
 
 <!-- Importante: NO INCLUIR SCRIPTS INLINE para el chatbot aquí -->
 <!-- Eliminar cualquier script como document.getElementById('chatbot-send-btn').addEventListener('click', sendMessage) -->
@@ -682,138 +699,6 @@ body.dark-mode .dark-mode-toggle {
     background: rgba(51,51,51,0.95);
 }
 
-/* Estilos para la barra de búsqueda */
-.sidebar-search {
-    padding: 15px 0;
-    margin-bottom: 20px;
-    border-bottom: 1px solid #444;
-}
-
-.search-container {
-    display: flex;
-    margin-bottom: 10px;
-}
-
-#search-input {
-    flex: 1;
-    padding: 8px 12px;
-    border: 2px solid #444;
-    border-radius: 20px 0 0 20px;
-    background-color: #333;
-    color: #fff;
-    font-size: 14px;
-    outline: none;
-    transition: all 0.3s;
-}
-
-#search-input:focus {
-    border-color: #ffcc00;
-}
-
-#search-button {
-    background-color: #ffcc00;
-    color: #333;
-    border: none;
-    border-radius: 0 20px 20px 0;
-    padding: 0 15px;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-#search-button:hover {
-    background-color: #e6b800;
-}
-
-.search-filters {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
-}
-
-.search-filters select {
-    flex: 1;
-    padding: 6px 10px;
-    border: 1px solid #444;
-    border-radius: 5px;
-    background-color: #333;
-    color: #fff;
-    font-size: 12px;
-    outline: none;
-}
-
-.search-filters select:focus {
-    border-color: #ffcc00;
-}
-
-.search-results {
-    max-height: 0;
-    overflow: hidden;
-    transition: all 0.3s;
-    background-color: #2a2a2a;
-    border-radius: 5px;
-}
-
-.search-results.active {
-    max-height: 300px;
-    overflow-y: auto;
-    margin-top: 10px;
-    padding: 10px;
-    border: 1px solid #444;
-}
-
-.search-result-item {
-    padding: 8px 10px;
-    border-radius: 5px;
-    margin-bottom: 5px;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.search-result-item:hover {
-    background-color: #444;
-}
-
-.search-result-item .result-title {
-    font-size: 14px;
-    color: #fff;
-}
-
-.search-result-item .result-path {
-    font-size: 11px;
-    color: #aaa;
-    margin-top: 2px;
-}
-
-.search-result-item .result-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 5px;
-}
-
-.search-result-item .result-actions button {
-    background: rgba(255, 204, 0, 0.2);
-    border: 1px solid rgba(255, 204, 0, 0.3);
-    color: #ffcc00;
-    border-radius: 5px;
-    padding: 5px 10px;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-}
-
-.search-result-item .result-actions button i {
-    margin-right: 5px;
-}
-
-.search-result-item .result-actions button:hover {
-    background: rgba(255, 204, 0, 0.4);
-}
-
 /* Notificaciones mejoradas */
 .notification {
     position: fixed;
@@ -1148,11 +1033,19 @@ window.performSearch = function() {
     // Limpiar resultados anteriores
     searchResultsContent.innerHTML = '';
     
-    // Obtener valor de búsqueda
-    const searchTerm = searchInput.value.trim().toLowerCase();
-    
-    if (searchTerm.length < 2) {
-        console.log("Término de búsqueda demasiado corto");
+    // Obtener valor de búsqueda y dividir en términos
+    const searchTermFull = searchInput.value.trim().toLowerCase();
+    const searchTerms = searchTermFull.split(' ').filter(term => term.length > 0);
+
+    if (searchTerms.length === 0 || searchTermFull.length < 2) {
+        console.log("Término de búsqueda demasiado corto o vacío");
+        // Mostrar mensaje de no resultados si es apropiado
+        const noResults = document.createElement('div');
+        noResults.className = 'search-no-results';
+        noResults.innerHTML = '<i class="fas fa-search"></i> Introduce al menos dos caracteres para buscar.';
+        searchResultsContent.appendChild(noResults);
+        searchOverlay.style.display = 'flex';
+        closeButton.onclick = function() { searchOverlay.style.display = 'none'; };
         return;
     }
     
@@ -1164,32 +1057,58 @@ window.performSearch = function() {
     let results = [];
     document.querySelectorAll('.menu-item a').forEach(link => {
         const title = link.textContent.trim().toLowerCase();
-        const href = link.getAttribute('href');
+        const href = link.getAttribute('href').toLowerCase();
         const trimestre = detectTrimestre(link);
-        const tipo = detectTipo(link);
+        const tipo = detectTipo(link).toLowerCase();
         
-        // Aplicar filtros
-        if ((trimestreFilter === 'all' || trimestre === trimestreFilter) &&
-            (tipoFilter === 'all' || tipo.toLowerCase().includes(tipoFilter.toLowerCase()))) {
-            
-            // Verificar si coincide con la búsqueda
-            if (title.includes(searchTerm) || 
-                href.toLowerCase().includes(searchTerm) ||
-                tipo.toLowerCase().includes(searchTerm)) {
-                
-                results.push({
-                    title: title,
-                    href: href,
-                    trimestre: trimestre,
-                    tipo: tipo
-                });
+        // Aplicar filtros de trimestre y tipo
+        if (!((trimestreFilter === 'all' || trimestre === trimestreFilter) &&
+            (tipoFilter === 'all' || tipo.includes(tipoFilter.toLowerCase())))) {
+            return; // No cumple con los filtros, saltar este enlace
+        }
+
+        let score = 0;
+        let termsFound = 0;
+
+        searchTerms.forEach(term => {
+            let termFoundThisIteration = false;
+            // La comparación con .includes() permite encontrar subcadenas.
+            // Ej: buscar "word" encontrará "WordPress" porque "word" está en "wordpress" (después de toLowerCase()).
+            if (title.includes(term)) {
+                score += 3; // Mayor peso para el título
+                termFoundThisIteration = true;
             }
+            if (tipo.includes(term)) {
+                score += 2; // Peso medio para el tipo
+                termFoundThisIteration = true;
+            }
+            if (href.includes(term)) {
+                score += 1; // Menor peso para el href
+                termFoundThisIteration = true;
+            }
+            if (termFoundThisIteration) {
+                termsFound++;
+            }
+        });
+
+        // AND implícito: todos los términos de búsqueda deben estar presentes
+        if (score > 0 && termsFound === searchTerms.length) {
+            results.push({
+                title: link.textContent.trim(), // Usar el título original para mostrar
+                href: link.getAttribute('href'),
+                trimestre: trimestre,
+                tipo: detectTipo(link), // Usar el tipo original para mostrar
+                score: score
+            });
         }
     });
+
+    // Ordenar resultados por puntuación (mayor a menor)
+    results.sort((a, b) => b.score - a.score);
     
     // Guardar resultados para el chatbot
     window.lastSearchResults = {
-        term: searchTerm,
+        term: searchTermFull,
         count: results.length,
         items: results.map(r => r.title)
     };
@@ -1209,7 +1128,7 @@ window.performSearch = function() {
             
             const resultPath = document.createElement('div');
             resultPath.className = 'result-path';
-            resultPath.textContent = `Trimestre ${result.trimestre} - ${result.tipo}`;
+            resultPath.textContent = `Trimestre ${result.trimestre} - ${result.tipo} (Puntuación: ${result.score})`;
             
             const resultActions = document.createElement('div');
             resultActions.className = 'result-actions';
@@ -1234,7 +1153,7 @@ window.performSearch = function() {
         // Sin resultados
         const noResults = document.createElement('div');
         noResults.className = 'search-no-results';
-        noResults.innerHTML = '<i class="fas fa-search"></i> No se encontraron resultados para "<strong>' + searchTerm + '</strong>"';
+        noResults.innerHTML = '<i class="fas fa-search"></i> No se encontraron resultados para "<strong>' + searchTermFull + '</strong>"';
         searchResultsContent.appendChild(noResults);
     }
     
@@ -1242,9 +1161,9 @@ window.performSearch = function() {
     searchOverlay.style.display = 'flex';
     
     // Asegurar que el botón de cierre funcione correctamente
-    closeButton.addEventListener('click', function() {
+    closeButton.onclick = function() { // Usar onclick para asegurar que solo hay un listener
         searchOverlay.style.display = 'none';
-    });
+    };
     
     // Disparar evento para notificar resultados al chatbot
     setTimeout(() => {
@@ -1290,10 +1209,12 @@ window.performSearch = function() {
         
         if (current) {
             const headerText = current.querySelector('.sidebar_h2').textContent.trim();
+            // Si el headerText es algo como "Ejercicios HTML", ya se manejará bien.
+            // Si es solo "HTML", también.
             return headerText;
         }
         
-        // Intentar detectar por URL o título
+        // Intentar detectar por URL o título si no se encontró por estructura de menú
         const href = linkElement.getAttribute('href').toLowerCase();
         const title = linkElement.textContent.toLowerCase();
         
@@ -1307,6 +1228,10 @@ window.performSearch = function() {
         if (href.includes('wordpress') || title.includes('wordpress')) return 'WordPress';
         if (href.includes('xsl') || title.includes('xsl') ||
             href.includes('xslt') || title.includes('xslt')) return 'XSL/XSLT';
+        
+        // Añadir detección para HTML. Se coloca después de las más específicas
+        // para evitar que un archivo como "ejercicio_css.html" se clasifique erróneamente como solo "HTML".
+        if (href.includes('html') || title.includes('html')) return 'HTML';
         
         // Por defecto
         return 'Otros';
@@ -1345,92 +1270,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <!-- Estilos para el overlay de búsqueda -->
 <style>
-.search-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 2000;
-}
-
-.search-results-modal {
-    background-color: #333;
-    border-radius: 10px;
-    width: 80%;
-    max-width: 800px;
-    max-height: 80vh;
-    overflow: hidden;
-    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
-}
-
-.search-modal-header {
-    background-color: #444;
-    padding: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #555;
-}
-
-.search-modal-title {
-    color: #fff;
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.search-modal-close {
-    background: none;
-    border: none;
-    color: #ccc;
-    font-size: 18px;
-    cursor: pointer;
-    transition: color 0.3s;
-}
-
-.search-modal-close:hover {
-    color: #ffcc00;
-}
-
-.search-results-content {
-    padding: 20px;
-    max-height: calc(80vh - 60px);
-    overflow-y: auto;
-}
-
-.search-no-results {
-    color: #ccc;
-    text-align: center;
-    padding: 20px;
-    font-style: italic;
-}
-
-/* Versión para modo claro */
-body:not(.dark-mode) .search-results-modal {
-    background-color: #fff;
-    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
-}
-
-body:not(.dark-mode) .search-modal-header {
-    background-color: #f0f0f0;
-    border-bottom: 1px solid #ddd;
-}
-
-body:not(.dark-mode) .search-modal-title {
-    color: #333;
-}
-
-body:not(.dark-mode) .search-modal-close {
-    color: #666;
-}
-
-body:not(.dark-mode) .search-no-results {
-    color: #666;
-}
+/* ESTILOS DEL MODAL DE BÚSQUEDA ELIMINADOS DE AQUÍ */
+/* PORQUE SE HAN MOVIDO A style.css */
+/*
+.search-overlay { ... }
+.search-results-modal { ... }
+.search-modal-header { ... }
+.search-modal-title { ... }
+.search-modal-close { ... }
+search-modal-close:hover { ... }
+.search-results-content { ... }
+.search-no-results { ... }
+body:not(.dark-mode) .search-results-modal { ... }
+body:not(.dark-mode) .search-modal-header { ... }
+body:not(.dark-mode) .search-modal-title { ... }
+body:not(.dark-mode) .search-modal-close { ... }
+body:not(.dark-mode) .search-no-results { ... }
+*/
 </style>
 
 </body>

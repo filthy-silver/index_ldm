@@ -7,11 +7,12 @@ window.chatbotData = {
     // Respuestas predefinidas para diferentes temas
     knowledge: [
         {
-            keywords: ['hola', 'buenas', 'saludos', 'hey'],
+            keywords: ['hola', 'buenas', 'saludos', 'hey', 'que tal', 'qué tal'],
             responses: [
-                '¡Hola! ¿En qué puedo ayudarte hoy?',
-                '¡Buenas! Estoy aquí para resolver tus dudas sobre el curso.',
-                '¡Saludos! ¿Tienes alguna pregunta sobre Lenguajes de Marcas?'
+                '¡Hola! ¿En qué puedo ayudarte hoy con Lenguajes de Marcas?',
+                '¡Buenas! Estoy aquí para resolver tus dudas sobre el curso. ¿Qué necesitas?',
+                '¡Saludos! ¿Tienes alguna pregunta sobre HTML, CSS, XML o WordPress?',
+                '¡Hola! Listo para ayudarte con tus consultas del curso.'
             ]
         },
         {
@@ -138,26 +139,102 @@ window.chatbotData = {
                 }
                 \`\`\``
             ]
+        },
+        {
+            keywords: ['xml', 'xsd', 'dtd', 'validación', 'esquema'],
+            responses: [
+                'XML (Extensible Markup Language) se usa para almacenar y transportar datos. Los DTD y XSD se utilizan para definir la estructura y validar documentos XML.',
+                'En el tercer trimestre profundizamos en XML, DTDs y XSDs. Revisa los ejercicios de la RA4.',
+                'La validación XML asegura que el documento cumple con las reglas definidas en su DTD o XSD. Es crucial para la integridad de los datos.'
+            ]
+        },
+        {
+            keywords: ['xpath', 'xslt', 'xsl'],
+            responses: [
+                'XPath es un lenguaje para navegar por elementos y atributos en un documento XML.',
+                'XSLT se usa para transformar documentos XML en otros formatos, como HTML. Utiliza XPath para seleccionar partes del XML.',
+                'Los ejercicios de la RA5 cubren XSLT y XPath. Son herramientas poderosas para trabajar con XML.'
+            ]
+        },
+        {
+            keywords: ['ayuda', 'comandos', 'qué puedes hacer', 'funciones', 'capacidades'],
+            responses: [
+                `Puedo ayudarte con varias cosas:
+                - Responder preguntas sobre HTML, CSS, JavaScript, XML, WordPress y otros temas del curso.
+                - Mostrarte ejemplos de código (ej. "ejemplo html", "código css").
+                - Buscar ejercicios o temas específicos (ej. "buscar tablas", "encuentra ejercicios de flexbox").
+                - Darte información sobre fechas importantes y la estructura del curso.
+                ¡Prueba a preguntarme algo!`
+            ]
+        },
+        {
+            keywords: ['profesor', 'tutor', 'contacto'],
+            responses: [
+                'Si necesitas contactar con el profesor, puedes hacerlo a través de la plataforma del curso o durante las horas de tutoría.',
+                'Para dudas complejas o personales, es mejor que contactes directamente con tu profesor.'
+            ]
+        },
+        {
+            keywords: ['trimestre 1', 'primer trimestre'],
+            responses: [
+                'El primer trimestre se centra en HTML y CSS fundamental, incluyendo selectores, Flexbox, formularios y tablas.',
+                'Puedes encontrar los ejercicios del primer trimestre en el menú lateral, bajo "Trimestre 1".'
+            ]
+        },
+        {
+            keywords: ['trimestre 2', 'segundo trimestre'],
+            responses: [
+                'El segundo trimestre cubre WordPress y Sistemas de Gestión Empresarial (SaaS).',
+                'Los materiales y ejercicios del segundo trimestre están disponibles en la sección "Trimestre 2" del menú.'
+            ]
+        },
+        {
+            keywords: ['trimestre 3', 'tercer trimestre'],
+            responses: [
+                'El tercer trimestre está dedicado a XML, DTD, XSD, XPath y XSLT.',
+                'Accede a los contenidos del tercer trimestre desde la opción "Trimestre 3" en el menú lateral.'
+            ]
+        },
+        {
+            keywords: ['turbo asistente', 'asistente turbo', 'modo turbo', 'abrir turbo'],
+            responses: [
+                'Activando el Turbo Asistente. Un momento...',
+                'Claro, abriendo el Turbo Asistente para ti.'
+            ],
+            action: 'openTurboAsistente' // Acción especial para abrir el modal
+        },
+        {
+            keywords: ['recursos', 'aprender más', 'webs útiles', 'enlaces'],
+            responses: [
+                `Claro, aquí tienes algunos recursos útiles:
+                 <br> - <a href="https://www.w3schools.com" target="_blank">W3Schools</a>
+                 <br> - <a href="https://developer.mozilla.org" target="_blank">MDN Web Docs</a>
+                 <br> - Para dudas específicas, ¡pregúntame!`,
+                'Te recomiendo visitar <a href="https://css-tricks.com" target="_blank">CSS-Tricks</a> para temas de CSS y <a href="https://stackoverflow.com" target="_blank">Stack Overflow</a> para preguntas de programación.'
+            ]
         }
     ],
     
     // Respuestas cuando no se encuentra coincidencia
     fallback: [
-        'Lo siento, no entiendo tu pregunta. ¿Podrías reformularla?',
-        'No tengo información sobre eso. ¿Puedo ayudarte con algo relacionado con el curso de Lenguajes de Marcas?',
-        'Disculpa, no tengo respuesta para eso. Prueba a preguntar sobre HTML, CSS, JavaScript o WordPress.',
-        'No estoy seguro de entender tu pregunta. ¿Quieres saber algo sobre los ejercicios del curso?'
+        'Lo siento, no he entendido bien tu pregunta. ¿Podrías reformularla o ser más específico?',
+        'No tengo información sobre eso en este momento. Intenta preguntar sobre temas del curso como HTML, CSS, XML, o busca un ejercicio específico.',
+        'Mmm, eso se escapa un poco de lo que sé. ¿Quizás puedas preguntar de otra manera? También puedes escribir "ayuda chat" para ver qué puedo hacer.',
+        'No estoy seguro de cómo responder a eso. ¿Tiene que ver con los ejercicios, WordPress, HTML, CSS o XML?'
     ],
     
     // Sugerencias de preguntas para mostrar al usuario
     suggestions: {
-        initial: ["Ejemplo de HTML", "Buscar ejercicios", "¿Cuándo termina el curso?"],
-        secondary: ["Ejemplo de CSS", "¿Qué es XML?", "Ayuda chat"]
+        initial: ["Ejemplo de HTML", "Buscar ejercicios CSS", "¿Qué es XML?", "Ayuda chat", "Modo Turbo"], // Añadida sugerencia para Turbo
+        secondary: ["Ejemplo de CSS", "Ejemplo de Flexbox", "Buscar WordPress", "¿Cuándo termina el curso?"]
     },
     
     // Configuración de la interfaz
     ui: {
         typingDelay: { min: 500, max: 1500 },
-        messageHistoryMax: 50
+        messageHistoryMax: 50,
+        maxSuggestionsInitial: 4, // Ajustado para mostrar más sugerencias si se desea
+        maxSuggestionsContextual: 3,
+        turboAsistenteURL: 'guia-chatbot.html' // URL para el iframe del Turbo Asistente (ejemplo)
     }
 };

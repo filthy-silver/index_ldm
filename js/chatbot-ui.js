@@ -19,6 +19,10 @@ const ChatbotUI = {
         this.chatbotHeader = document.querySelector('.chatbot-header');
         this.chatbotResize = document.getElementById('chatbot-resize');
         this.suggestionsContainer = document.getElementById('chatbot-suggestions');
+        this.turboAsistenteBtn = document.getElementById('chatbot-turbo-btn'); // Restaurado
+        this.turboAsistenteModal = document.getElementById('turbo-asistente-modal'); // Restaurado
+        this.turboAsistenteIframe = document.getElementById('turbo-asistente-iframe'); // Restaurado
+        this.turboAsistenteModalCloseBtn = document.getElementById('turbo-asistente-modal-close'); // Restaurado
         
         // Verificar que los elementos básicos existen
         if (!this.chatbotContainer || !this.chatbotButton) {
@@ -160,6 +164,29 @@ const ChatbotUI = {
                 } else {
                     icon.classList.remove('fa-compress-alt');
                     icon.classList.add('fa-expand-alt');
+                }
+            });
+        }
+        
+        // Botón para Turbo Asistente (Restaurado)
+        if (this.turboAsistenteBtn) {
+            this.turboAsistenteBtn.addEventListener('click', () => {
+                this.showTurboAsistente();
+            });
+        }
+
+        // Botón para cerrar el modal del Turbo Asistente (Restaurado)
+        if (this.turboAsistenteModalCloseBtn) {
+            this.turboAsistenteModalCloseBtn.addEventListener('click', () => {
+                this.hideTurboAsistente();
+            });
+        }
+
+        // Cerrar modal si se hace clic fuera del contenido (opcional) (Restaurado)
+        if (this.turboAsistenteModal) {
+            this.turboAsistenteModal.addEventListener('click', (event) => {
+                if (event.target === this.turboAsistenteModal) {
+                    this.hideTurboAsistente();
                 }
             });
         }
@@ -345,9 +372,13 @@ const ChatbotUI = {
         this.suggestionsContainer.innerHTML = '';
         
         // Obtener sugerencias iniciales
-        const initialSuggestions = window.chatbotData.suggestions.initial || 
+        const allInitialSuggestions = window.chatbotData.suggestions.initial || 
             ["Ejemplo de HTML", "Buscar ejercicios", "¿Cuándo termina el curso?"];
         
+        // Limitar el número de sugerencias a mostrar (ej. 3 o 4)
+        const maxSuggestions = window.chatbotData.ui?.maxSuggestionsInitial || 3;
+        const initialSuggestions = allInitialSuggestions.slice(0, maxSuggestions);
+
         // Crear botones de sugerencias
         initialSuggestions.forEach(suggestion => {
             const suggestionBtn = document.createElement('button');
@@ -374,10 +405,14 @@ const ChatbotUI = {
         this.suggestionsContainer.innerHTML = '';
         
         // Determinar qué conjunto de sugerencias usar
-        const suggestions = useSecondary ? 
+        const allSuggestions = useSecondary ? 
             (window.chatbotData.suggestions.secondary || ["Ejemplo de CSS", "¿Qué es XML?", "Ayuda chat"]) :
             (window.chatbotData.suggestions.initial || ["Ejemplo de HTML", "Buscar ejercicios", "¿Cuándo termina el curso?"]);
         
+        // Limitar el número de sugerencias a mostrar
+        const maxSuggestions = window.chatbotData.ui?.maxSuggestionsContextual || 3;
+        const suggestions = allSuggestions.slice(0, maxSuggestions);
+
         // Mostrar el contenedor
         this.suggestionsContainer.style.display = 'flex';
         
@@ -395,6 +430,30 @@ const ChatbotUI = {
             
             this.suggestionsContainer.appendChild(suggestionBtn);
         });
+    },
+
+    /**
+     * Mostrar el modal del Turbo Asistente (Restaurado)
+     */
+    showTurboAsistente: function() {
+        if (this.turboAsistenteModal && this.turboAsistenteIframe) {
+            // Idealmente, la URL del turbo asistente debería venir de chatbot-data.js
+            const turboAsistenteURL = window.chatbotData?.ui?.turboAsistenteURL || 'turbo-asistente.html';
+            this.turboAsistenteIframe.src = turboAsistenteURL;
+            this.turboAsistenteModal.style.display = 'flex';
+        } else {
+            console.warn("Elementos del Turbo Asistente no encontrados en la UI.");
+        }
+    },
+
+    /**
+     * Ocultar el modal del Turbo Asistente (Restaurado)
+     */
+    hideTurboAsistente: function() {
+        if (this.turboAsistenteModal && this.turboAsistenteIframe) {
+            this.turboAsistenteModal.style.display = 'none';
+            this.turboAsistenteIframe.src = 'about:blank'; // Limpiar el iframe para detener cualquier proceso
+        }
     },
     
     /**
@@ -507,10 +566,14 @@ const ChatbotUI = {
         messageDiv.classList.add('message');
         messageDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
         
-        // Formatear código si hay bloques de código
-        if (sender === 'bot' && text.includes('```')) {
+        if (sender === 'bot') {
+            // Para los mensajes del bot, asumimos que el texto ya está formateado
+            // (por ChatbotLogic.formatMessage o es HTML directo de chatbot-data.js)
+            // y puede contener HTML.
             messageDiv.innerHTML = text;
         } else {
+            // Para los mensajes del usuario, es más seguro usar textContent
+            // para prevenir inyección de HTML.
             messageDiv.textContent = text;
         }
         
@@ -524,16 +587,12 @@ const ChatbotUI = {
      * Reemplazar el último mensaje del bot
      */
     replaceLastBotMessage: function(newText) {
-        const botMessages = document.querySelectorAll('.bot-message');
+        const botMessages = this.chatbotMessages.querySelectorAll('.bot-message'); // Asegurarse de que busca dentro de this.chatbotMessages
         if (botMessages.length > 0) {
             const lastBotMessage = botMessages[botMessages.length - 1];
             
-            // Preservar el formato si contiene saltos de línea
-            if (newText.includes('\n')) {
-                lastBotMessage.innerHTML = newText.replace(/\n/g, '<br>');
-            } else {
-                lastBotMessage.textContent = newText;
-            }
+            // Usar innerHTML para permitir formato en el mensaje reemplazado
+            lastBotMessage.innerHTML = newText;
         }
     },
     
