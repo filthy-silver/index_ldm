@@ -44,16 +44,16 @@
 
 .chatbot-title {
     font-weight: bold;
-    font-size: 0.95em; /* Reducido */
+    font-size: 0.95em; 
 }
 
 .chatbot-title i {
-    margin-right: 6px; /* Reducido */
+    margin-right: 6px; 
 }
 
 .chatbot-controls {
     display: flex;
-    gap: 3px; /* Reducido */
+    gap: 3px; 
 }
 
 /* Estilos para los botones de control del chatbot en el header */
@@ -62,8 +62,8 @@
     border: none;
     color: #333;
     cursor: pointer;
-    font-size: 14px; /* Reducido */
-    padding: 4px; /* Reducido */
+    font-size: 14px; 
+    padding: 4px; 
     transition: transform 0.2s, color 0.2s;
     line-height: 1;
 }
@@ -79,7 +79,7 @@
     flex-direction: column;
     overflow: hidden;
     padding: 6px; /* Reducido significativamente */
-    background-color: #222; /* Como el fondo de popup en default.html */
+    background-color: #222; 
 }
 
 .chatbot-messages {
@@ -319,15 +319,15 @@
 /* Botón flotante para abrir el chatbot */
 .chatbot-button {
     position: fixed;
-    bottom: 30px;
-    right: 30px;
+    bottom: 60px;
+    right: 80px;
     background-color: #ffcc00;
     color: #333;
-    width: 50px; /* Reducido */
-    height: 50px; /* Reducido */
+    width: 80px; /* Reducido */
+    height: 80px; /* Reducido */
     border-radius: 50%;
     border: none;
-    font-size: 20px; /* Reducido */
+    font-size: 35px; /* Reducido */
     display: flex;
     justify-content: center;
     align-items: center;

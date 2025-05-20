@@ -348,13 +348,14 @@ iframe {
 /* === Estilos para la barra de búsqueda en el Sidebar === */
 .sidebar-search {
     padding: 15px;
-    margin-bottom: 15px;
-    border-bottom: 1px solid #333;
+    padding-bottom: 0; /* Eliminar padding inferior */
+    margin-bottom: 0; /* Eliminar margen inferior */
+    border-bottom: none !important; /* Asegurar que no hay borde inferior */
 }
 
 .search-container {
     display: flex;
-    margin-bottom: 12px;
+    margin-bottom: 0; /* Eliminar margen inferior */
     position: relative;
 }
 
@@ -402,7 +403,7 @@ iframe {
 }
 */
 
-
+/*
 #search-button:hover {
     background-color: #e6b800;
 }
@@ -428,6 +429,17 @@ iframe {
 .search-filters select:focus {
     border-color: #ffcc00;
     box-shadow: 0 0 0 2px rgba(255, 204, 0, 0.3);
+}
+*/
+
+/* Ocultar completamente el panel de resultados en la barra lateral */
+.search-results {
+    display: none !important; /* Ocultar completamente */
+    max-height: 0;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    border: none;
 }
 
 /* Estilos para los resultados de búsqueda en el panel del sidebar */

@@ -9,13 +9,12 @@
 
 </head>
 <body class="dark-mode"> <!-- Initial class, JS will add/remove cursor-enabled -->
-    <!-- Botón de modo oscuro fuera del chatbot -->
     <button id="global-darkmode-toggle" class="dark-mode-toggle" title="Modo oscuro">
         <i class="fas fa-sun"></i> <!-- Cambiado porque por defecto inicia en modo oscuro -->
     </button>
     <div class="container">
         <div class="sidebar">
-            <!-- Añadir barra de búsqueda y filtros en la parte superior del sidebar -->
+
             <div class="sidebar-search">
                 <div class="search-container">
                     <input type="text" id="search-input" placeholder="Buscar ejercicios...">
@@ -23,6 +22,7 @@
                         <i class="fas fa-search"></i>
                     </button>
                 </div>
+                <!--
                 <div class="search-filters">
                     <select id="filter-trimestre">
                         <option value="all">Todos</option>
@@ -32,7 +32,7 @@
                     </select>
                     <select id="filter-tipo">
                         <option value="all">Todos los tipos</option>
-                        <option value="html">HTML</option> <!-- Nueva opción -->
+                        <option value="html">HTML</option> 
                         <option value="css">CSS</option>
                         <option value="flexbox">FlexBox</option>
                         <option value="form">Formularios</option>
@@ -40,10 +40,13 @@
                         <option value="xml">XML/DTD/XSD</option>
                     </select>
                 </div>
+                -->
                 <div id="search-results" class="search-results"></div>
             </div>
 
             <h1><a href="index.html" style="color: #ffcc00; text-decoration: none;">Lenguajes de Marcas</a></h1>
+
+            
             
             <div class="menu-container">
                 <!-- Trimestre 1 -->
@@ -127,7 +130,7 @@
                         <div class="submenu-item">
                             <div class="sidebar_h2 desplegable">XML, XSDs, DTDs</div>
                             <ul class="ejercicio">
-                                <li><a href="pdf\validacionXML" target="contentFrame">Validacion XML Diapositivas</a></li>
+                                <li><a href="pdf\validacionXML.pdf" target="contentFrame">Validacion XML Diapositivas</a></li>
                                 <li><a href="pdf\CreaXMLdesdeDTD.pdf" target="contentFrame">Crear XML desde DTD</a></li>
                                 <li><a href="pdf\EjerciciosDTD_libro.pdf" target="contentFrame">Ejercicios del Libro</a></li>
                                 <li><a href="pdf\Libro_a_XSD_DTD.pdf" target="contentFrame">Ej. Libro a XSD y DTD</a></li>
@@ -282,15 +285,7 @@
             }, 500);
         });
     </script>
-    <!-- 1. PROBLEMA: Aquí se está cargando el script una primera vez, muy temprano en el documento -->
-<!-- <script src="js/chatbot.js"></script> -->
 
-<!-- Comentar los módulos hasta que estén listos 
-<script src="js/chatbot-data.js"></script>
-<script src="js/chatbot-logic.js"></script>
-<script src="js/chatbot-ui.js"></script>
-<script src="js/chatbot-init.js"></script>
--->
 
 <!-- Chatbot HTML - Estructura básica -->
 <div class="chatbot-container" id="chatbot-container">
@@ -357,11 +352,11 @@
 <style>
 .chatbot-button {
     position: fixed;
-    bottom: 30px;
-    right: 90px; /* Alejado de la esquina */
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
+    bottom: 80px;
+    right: 80px;    /* Desplazado más a la izquierda (antes 55px) */
+    width: 64;
+    height: 64;
+    border-radius: 14px;
     background-color: #ffcc00;
     color: #333;
     border: none;
@@ -371,17 +366,21 @@
     align-items: center;
     cursor: pointer;
     z-index: 1000;
-    font-size: 24px;
+    font-size: 22px;
     transition: all 0.3s;
+}
+.chatbot-button:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.23);
 }
 
 /* Estilos actualizados para el chatbot movible */
 .chatbot-container {
     position: fixed;
     bottom: 90px;
-    right: 90px; /* Alejado de la esquina */
-    width: 350px;
-    height: 450px;
+    right: 80px;    /* Desplazado más a la izquierda (antes 55px) */
+    width: 380px;   /* Más ancho por defecto */
+    height: 500px;  /* Más alto por defecto */
     background-color: #fff;
     border-radius: 15px;
     box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
@@ -389,7 +388,6 @@
     flex-direction: column;
     overflow: hidden;
     z-index: 1000;
-    /* Separamos las transiciones para evitar problemas con transform/position */
     transition: box-shadow 0.3s, border-color 0.3s, background-color 0.3s, color 0.3s, width 0.3s, height 0.3s;
 }
 
@@ -401,13 +399,13 @@
 
 /* Definir claramente el tamaño normal y grande */
 .chatbot-container {
-    width: 350px;
-    height: 450px;
+    width: 380px;   /* Tamaño base aumentado */
+    height: 500px;  /* Tamaño base aumentado */
 }
 
 .chatbot-large {
-    width: 450px !important;
-    height: 550px !important;
+    width: 500px !important;   /* Tamaño grande aumentado */
+    height: 600px !important;  /* Tamaño grande aumentado */
 }
 
 /* Evitar transiciones durante el arrastre */
@@ -673,25 +671,25 @@ body.dark-mode .typing-indicator span {
 
 .dark-mode-toggle {
     position: fixed;
-    top: 30px;
-    right: 90px; /* Alejado de la esquina */
+    top: 50px;
+    right: 80px;    /* Desplazado más a la izquierda (antes 55px) */
     background: rgba(34,34,34,0.85);
     border: none;
     color: #ffcc00;
-    font-size: 1.8rem; /* Tamaño reducido */
+    font-size: 1.3rem; /* Más pequeño */
     cursor: pointer;
     transition: transform 0.3s, background 0.3s;
     z-index: 2000;
-    border-radius: 50%;
-    width: 48px; /* Tamaño reducido */
-    height: 48px; /* Tamaño reducido */
+    border-radius: 20px; /* Más cuadrado */
+    width: 36px;   /* Más pequeño */
+    height: 36px;  /* Más pequeño */
     display: flex;
     align-items: center;
     justify-content: center;
     box-shadow: 0 4px 16px rgba(0,0,0,0.18);
 }
 .dark-mode-toggle:hover {
-    transform: rotate(30deg) scale(1.1);
+    transform: rotate(30deg) scale(1.08);
     background: #222;
 }
 body.dark-mode .dark-mode-toggle {

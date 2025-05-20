@@ -130,13 +130,45 @@ const ChatbotUI = {
      * Inicializar botones y controles
      */
     initButtons: function() {
-        // Botón para abrir el chatbot
-        if (this.chatbotButton) {
-            this.chatbotButton.addEventListener('click', () => {
-                this.chatbotContainer.style.display = 'flex';
-                this.chatbotButton.style.display = 'none';
-                if (this.chatbotInput) this.chatbotInput.focus();
-                localStorage.setItem('chatbotOpen', 'true');
+        console.log("Inicializando botones del chatbot...");
+        
+        // Verificar botón para abrir el chatbot
+        if (!this.chatbotButton) {
+            console.error("ERROR: Botón del chatbot no encontrado!");
+            this.chatbotButton = document.getElementById('chatbot-button');
+        }
+        
+        // Verificar contenedor del chatbot
+        if (!this.chatbotContainer) {
+            console.error("ERROR: Contenedor del chatbot no encontrado!");
+            this.chatbotContainer = document.getElementById('chatbot-container');
+        }
+        
+        // Botón para abrir el chatbot - implementación robusta
+        if (this.chatbotButton && this.chatbotContainer) {
+            console.log("Configurando event listener para botón del chatbot");
+            
+            // Remover event listeners anteriores para evitar duplicados
+            const newButton = this.chatbotButton.cloneNode(true);
+            this.chatbotButton.parentNode.replaceChild(newButton, this.chatbotButton);
+            this.chatbotButton = newButton;
+            
+            // Agregar event listener con función explícita para mejorar depuración
+            this.chatbotButton.addEventListener('click', function() {
+                console.log("Clic en botón del chatbot detectado");
+                const container = document.getElementById('chatbot-container');
+                if (container) {
+                    container.style.display = 'flex';
+                    this.style.display = 'none';
+                    
+                    // Enfocar campo de entrada
+                    const inputField = document.getElementById('chatbot-input-field');
+                    if (inputField) inputField.focus();
+                    
+                    localStorage.setItem('chatbotOpen', 'true');
+                } else {
+                    console.error("Contenedor del chatbot no encontrado al hacer clic");
+                }
             });
         }
         
@@ -366,35 +398,85 @@ const ChatbotUI = {
      * Inicializar sugerencias interactivas
      */
     initSuggestions: function() {
-        if (!this.suggestionsContainer || !window.chatbotData) return;
+        console.log("Inicializando sugerencias del chatbot...");
+        if (!this.suggestionsContainer) {
+            console.error("Error: Contenedor de sugerencias no encontrado");
+            return;
+        }
         
         // Limpiar contenedor
         this.suggestionsContainer.innerHTML = '';
         
-        // Obtener sugerencias iniciales
-        const allInitialSuggestions = window.chatbotData.suggestions.initial || 
-            ["Ejemplo de HTML", "Buscar ejercicios", "¿Cuándo termina el curso?"];
-        
-        // Limitar el número de sugerencias a mostrar (ej. 3 o 4)
-        const maxSuggestions = window.chatbotData.ui?.maxSuggestionsInitial || 3;
-        const initialSuggestions = allInitialSuggestions.slice(0, maxSuggestions);
+        try {
+            // Verificar si chatbotData existe
+            if (!window.chatbotData || !window.chatbotData.suggestions) {
+                console.warn("Advertencia: chatbotData.suggestions no encontrado, usando valores por defecto");
+                
+                // Crear algunas sugerencias por defecto si no hay datos
+                const defaultSuggestions = ["Ejemplo de HTML", "Buscar ejercicios", "¿Cuándo termina el curso?"];
+                
+                defaultSuggestions.forEach(suggestion => {
+                    this.createSuggestionButton(suggestion);
+                });
+                
+                return;
+            }
+            
+            // Obtener sugerencias iniciales
+            const allInitialSuggestions = window.chatbotData.suggestions.initial || 
+                ["Ejemplo de HTML", "Buscar ejercicios CSS", "¿Cuándo termina el curso?"];
+            
+            console.log("Sugerencias disponibles:", allInitialSuggestions);
+            
+            // Limitar el número de sugerencias a mostrar
+            const maxSuggestions = window.chatbotData.ui?.maxSuggestionsInitial || 4;
+            const initialSuggestions = allInitialSuggestions.slice(0, maxSuggestions);
+            
+            console.log("Mostrando sugerencias:", initialSuggestions);
+            
+            // Crear botones de sugerencias
+            initialSuggestions.forEach(suggestion => {
+                this.createSuggestionButton(suggestion);
+            });
+            
+            // Asegurar que el contenedor sea visible
+            this.suggestionsContainer.style.display = 'flex';
+        } catch (error) {
+            console.error("Error al inicializar sugerencias:", error);
+            
+            // Fallback a sugerencias básicas en caso de error
+            const emergencySuggestions = ["Ayuda", "Ejemplo de HTML", "Buscar ejercicios"];
+            emergencySuggestions.forEach(suggestion => {
+                this.createSuggestionButton(suggestion);
+            });
+        }
+    },
 
-        // Crear botones de sugerencias
-        initialSuggestions.forEach(suggestion => {
+    /**
+     * Crea un botón de sugerencia
+     * @param {string} text - Texto de la sugerencia
+     */
+    createSuggestionButton: function(text) {
+        if (!this.suggestionsContainer) return;
+        
+        try {
             const suggestionBtn = document.createElement('button');
             suggestionBtn.className = 'chatbot-suggestion-btn';
-            suggestionBtn.textContent = suggestion;
+            suggestionBtn.textContent = text;
             suggestionBtn.addEventListener('click', () => {
-                if (this.chatbotInput) {
-                    this.chatbotInput.value = suggestion;
-                    this.sendMessage();
-                }
+                console.log("Sugerencia seleccionada:", text);
+                // Disparar evento directamente
+                document.dispatchEvent(new CustomEvent('chatbot-message-sent', {
+                    detail: { message: text }
+                }));
             });
             
             this.suggestionsContainer.appendChild(suggestionBtn);
-        });
+        } catch (error) {
+            console.error("Error al crear botón de sugerencia:", error);
+        }
     },
-    
+
     /**
      * Actualizar sugerencias mostradas
      */
@@ -406,8 +488,8 @@ const ChatbotUI = {
         
         // Determinar qué conjunto de sugerencias usar
         const allSuggestions = useSecondary ? 
-            (window.chatbotData.suggestions.secondary || ["Ejemplo de CSS", "¿Qué es XML?", "Ayuda chat"]) :
-            (window.chatbotData.suggestions.initial || ["Ejemplo de HTML", "Buscar ejercicios", "¿Cuándo termina el curso?"]);
+            (window.chatbotData.suggestions?.secondary || ["Ejemplo de CSS", "¿Qué es XML?", "Ayuda chat"]) :
+            (window.chatbotData.suggestions?.initial || ["Ejemplo de HTML", "Buscar ejercicios", "¿Cuándo termina el curso?"]);
         
         // Limitar el número de sugerencias a mostrar
         const maxSuggestions = window.chatbotData.ui?.maxSuggestionsContextual || 3;
@@ -422,10 +504,10 @@ const ChatbotUI = {
             suggestionBtn.className = 'chatbot-suggestion-btn';
             suggestionBtn.textContent = suggestion;
             suggestionBtn.addEventListener('click', () => {
-                if (this.chatbotInput) {
-                    this.chatbotInput.value = suggestion;
-                    this.sendMessage();
-                }
+                // IMPORTANTE: Crear y disparar el evento directamente
+                document.dispatchEvent(new CustomEvent('chatbot-message-sent', {
+                    detail: { message: suggestion }
+                }));
             });
             
             this.suggestionsContainer.appendChild(suggestionBtn);
@@ -567,13 +649,35 @@ const ChatbotUI = {
         messageDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
         
         if (sender === 'bot') {
-            // Para los mensajes del bot, asumimos que el texto ya está formateado
-            // (por ChatbotLogic.formatMessage o es HTML directo de chatbot-data.js)
-            // y puede contener HTML.
+            // Para los mensajes del bot, el texto puede contener HTML desde ChatbotLogic.formatMessage
             messageDiv.innerHTML = text;
+            
+            // Agregar botones de copia para bloques de código si existen
+            messageDiv.querySelectorAll('.code-block').forEach(block => {
+                const codeHeader = block.querySelector('.code-header');
+                const copyBtn = codeHeader?.querySelector('.copy-code-btn');
+                const codeElement = block.querySelector('pre code');
+                
+                if (copyBtn && codeElement) {
+                    copyBtn.addEventListener('click', () => {
+                        const textToCopy = codeElement.textContent;
+                        navigator.clipboard.writeText(textToCopy)
+                            .then(() => {
+                                // Feedback visual temporal
+                                const icon = copyBtn.querySelector('i');
+                                if (icon) {
+                                    icon.className = 'fas fa-check';
+                                    setTimeout(() => {
+                                        icon.className = 'fas fa-copy';
+                                    }, 2000);
+                                }
+                            })
+                            .catch(err => console.error('Error al copiar:', err));
+                    });
+                }
+            });
         } else {
             // Para los mensajes del usuario, es más seguro usar textContent
-            // para prevenir inyección de HTML.
             messageDiv.textContent = text;
         }
         
@@ -581,6 +685,11 @@ const ChatbotUI = {
         
         // Auto-scroll al último mensaje
         this.chatbotMessages.scrollTop = this.chatbotMessages.scrollHeight;
+        
+        // Guardar en el historial local si existe la función
+        if (this.saveChatHistory) {
+            this.saveChatHistory(text, sender);
+        }
     },
     
     /**
@@ -692,7 +801,31 @@ const ChatbotUI = {
         history.forEach(msg => {
             this.addMessage(msg.text, msg.sender);
         });
-    }
+    },
+
+    /**
+     * Enviar mensaje desde el campo de entrada
+     */
+    sendMessage: function() {
+        if (!this.chatbotInput) return;
+        
+        const message = this.chatbotInput.value.trim();
+        if (message) {
+            // Registrar en el sistema de depuración si está disponible
+            if (window.DebugSystem) {
+                window.DebugSystem.log('[UI] Mensaje enviado: ' + message, 'info');
+            }
+            
+            // Disparar evento de envío de mensaje
+            document.dispatchEvent(new CustomEvent('chatbot-message-sent', {
+                detail: { message: message }
+            }));
+            
+            // Limpiar campo de entrada
+            this.chatbotInput.value = '';
+            this.chatbotInput.focus();
+        }
+    },
 };
 
 // Exportar el objeto para uso en otros scripts

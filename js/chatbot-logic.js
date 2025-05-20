@@ -2,66 +2,223 @@
  * chatbot-logic.js - Lógica del chatbot para procesar mensajes y generar respuestas
  */
 
-const ChatbotLogic = {
+// Asegurarse de que el objeto se define correctamente
+window.ChatbotLogic = {
+    // Códigos de error para facilitar la depuración
+    ERROR_CODES: {
+        MISSING_DATA: 'E001',
+        KEYWORD_PROCESSING: 'E002',
+        MATCHING_ALGORITHM: 'E003',
+        RESPONSE_FORMATTING: 'E004',
+        PREPROCESSING: 'E005',
+        UNKNOWN: 'E999'
+    },
+    
+    // Modo debug para mostrar información detallada en la consola
+    debugMode: true,
+    
     /**
      * Inicializa la lógica del chatbot
      */
     init: function() {
         console.log("Inicializando lógica del chatbot");
         
+        // Verificación adicional
+        if (typeof window.ChatbotLogic === 'undefined') {
+            console.error("Error crítico: window.ChatbotLogic no está definido correctamente");
+            return false;
+        }
+        
         // Verificar que los datos estén disponibles
         if (!window.chatbotData) {
             console.error("Error: No se encontraron los datos del chatbot (chatbot-data.js)");
+            // Crear datos mínimos de emergencia
+            window.chatbotData = {
+                knowledge: [
+                    {
+                        keywords: ['hola', 'buenas', 'saludos'],
+                        responses: ['Hola. Soy una versión simplificada del chatbot.']
+                    }
+                ],
+                fallback: [
+                    'Lo siento, no puedo responder a eso en modo de emergencia.',
+                    'No entiendo tu pregunta. Estoy funcionando en modo limitado.'
+                ]
+            };
+        }
+        
+        // Verificar la estructura de datos esencial de forma simple
+        if (!this.basicValidation()) {
+            console.error("Error: La estructura de datos del chatbot es inválida");
             return false;
         }
         
         // Inicializar el historial de chat
         this.chatHistory = this.loadChatHistory() || [];
         
+        console.log("Chatbot inicializado correctamente");
+        console.log("Datos cargados:", 
+            window.chatbotData.knowledge?.length || 0, "entradas de conocimiento",
+            window.chatbotData.fallback?.length || 0, "respuestas predeterminadas");
+        
         return true;
     },
     
     /**
-     * Genera una respuesta basada en el mensaje del usuario
-     * @param {string} message - Mensaje del usuario
-     * @return {string} Respuesta del chatbot
+     * Validación básica de los datos del chatbot
+     */
+    basicValidation: function() {
+        try {
+            // Verificar si chatbotData existe y tiene estructura básica
+            if (!window.chatbotData) {
+                console.error("chatbotData no existe");
+                return false;
+            }
+            
+            // Verificar si knowledge existe y es un array
+            if (!Array.isArray(window.chatbotData.knowledge)) {
+                console.error("chatbotData.knowledge no es un array");
+                return false;
+            }
+            
+            // Verificar si fallback existe y es un array
+            if (!Array.isArray(window.chatbotData.fallback)) {
+                console.error("chatbotData.fallback no es un array");
+                return false;
+            }
+            
+            return true;
+        } catch (error) {
+            console.error("Error en validación:", error);
+            return false;
+        }
+    },
+    
+    /**
+     * Genera una respuesta basada en el mensaje del usuario - VERSIÓN SIMPLIFICADA
      */
     generateResponse: function(message) {
-        // Convertir a minúsculas para facilitar la búsqueda
-        const lowerMessage = message.toLowerCase();
-        
-        // Comprobar si es una búsqueda
-        if (this.isSearchQuery(lowerMessage)) {
-            return this.handleSearchQuery(lowerMessage);
-        }
-        
-        // Buscar en la base de conocimientos
-        for (const entry of window.chatbotData.knowledge) {
-            for (const keyword of entry.keywords) {
-                if (lowerMessage.includes(keyword)) {
-                    // Manejar acciones especiales (Restaurado)
-                    if (entry.action === 'openTurboAsistente') {
-                        if (window.ChatbotUI && typeof window.ChatbotUI.showTurboAsistente === 'function') {
-                            window.ChatbotUI.showTurboAsistente();
-                            // Si la acción es abrir el modal, podemos devolver un mensaje específico o
-                            // simplemente dejar que la respuesta asociada (si existe) se muestre.
-                            // Por ahora, si hay una respuesta asociada, se mostrará.
-                            // Si no, se podría añadir un mensaje como "Abriendo el Turbo Asistente..."
-                        } else {
-                            console.warn("Función showTurboAsistente no encontrada en ChatbotUI.");
-                        }
+        try {
+            console.log("Generando respuesta para:", message);
+            
+            // Validar mensaje de entrada
+            if (!message || typeof message !== 'string' || message.trim() === '') {
+                return "Por favor, escribe un mensaje.";
+            }
+            
+            // Verificar que chatbotData exista
+            if (!window.chatbotData) {
+                console.error("chatbotData no está disponible");
+                return "Error: Base de conocimientos no disponible.";
+            }
+            
+            // Simplificar el mensaje para búsqueda
+            const lowerMsg = message.toLowerCase().trim();
+            console.log("Mensaje procesado:", lowerMsg);
+            
+            // VERIFICAR SI ES UN COMANDO DE DEPURACIÓN
+            if (lowerMsg === "debug on") {
+                if (window.DebugSystem) {
+                    window.DebugSystem.enableDebugMode();
+                }
+                this.debugMode = true;
+                return "Modo debug activado. Ahora verás información detallada y el panel de depuración.";
+            } else if (lowerMsg === "debug off") {
+                if (window.DebugSystem) {
+                    window.DebugSystem.disableDebugMode();
+                }
+                this.debugMode = false;
+                return "Modo debug desactivado.";
+            }
+            
+            // VERIFICAR SI ES UNA BÚSQUEDA
+            if (this.isSearchQuery(lowerMsg)) {
+                console.log("Se ha detectado una consulta de búsqueda");
+                return this.handleSearchQuery(lowerMsg);
+            }
+            
+            // VERSIÓN SIMPLIFICADA: buscar palabras clave directamente
+            for (const entry of window.chatbotData.knowledge) {
+                if (!entry.keywords || !entry.responses) continue;
+                
+                // Verificar si alguna keyword coincide con el mensaje
+                for (const keyword of entry.keywords) {
+                    if (lowerMsg.includes(keyword)) {
+                        console.log("Coincidencia encontrada con keyword:", keyword);
+                        
+                        // Seleccionar respuesta aleatoria
+                        const randomIndex = Math.floor(Math.random() * entry.responses.length);
+                        const response = entry.responses[randomIndex];
+                        
+                        return response;
                     }
-
-                    // Seleccionar respuesta aleatoria de este tema
-                    const randomIndex = Math.floor(Math.random() * entry.responses.length);
-                    return entry.responses[randomIndex];
                 }
             }
+            
+            // Si no hay coincidencias, usar respuesta predeterminada
+            const randomIndex = Math.floor(Math.random() * window.chatbotData.fallback.length);
+            return window.chatbotData.fallback[randomIndex];
+            
+        } catch (error) {
+            console.error("Error en generateResponse:", error);
+            return "Lo siento, ocurrió un error al procesar tu consulta.";
+        }
+    },
+    
+    /**
+     * Maneja errores y devuelve un mensaje de error amigable
+     * @param {string} code - Código de error
+     * @param {string} message - Mensaje de error
+     * @return {string} Mensaje de error formateado
+     */
+    handleError: function(code, message) {
+        console.error(`Error [${code}]: ${message}`);
+        
+        // Si está en modo debug, devolver información detallada
+        if (this.debugMode) {
+            return `Lo siento, ocurrió un error (${code}). Intenta con otra pregunta.\n\nDEBUG: ${message}`;
         }
         
-        // Si no hay coincidencias, usar respuesta predeterminada
-        const randomIndex = Math.floor(Math.random() * window.chatbotData.fallback.length);
-        return window.chatbotData.fallback[randomIndex];
+        // Respuesta de error genérica para el usuario final
+        return this.getErrorResponse(code);
+    },
+    
+    /**
+     * Devuelve una respuesta de error según el código
+     * @param {string} code - Código de error
+     * @return {string} Mensaje de error amigable
+     */
+    getErrorResponse: function(code) {
+        // Mensajes específicos según el código de error
+        const errorMessages = {
+            [this.ERROR_CODES.MISSING_DATA]: "No pude encontrar la información necesaria. Por favor, intenta con otra pregunta.",
+            [this.ERROR_CODES.KEYWORD_PROCESSING]: "No pude entender bien tu consulta. ¿Podrías reformularla?",
+            [this.ERROR_CODES.MATCHING_ALGORITHM]: "Tuve problemas para encontrar una respuesta adecuada. ¿Podrías preguntar de otra manera?",
+            [this.ERROR_CODES.RESPONSE_FORMATTING]: "Encontré una respuesta pero no pude formatearla correctamente. Por favor, intenta nuevamente.",
+            [this.ERROR_CODES.PREPROCESSING]: "No pude procesar tu pregunta correctamente. ¿Podrías escribirla de otra forma?",
+            [this.ERROR_CODES.UNKNOWN]: "Ocurrió un error inesperado. Por favor, intenta con otra pregunta."
+        };
+        
+        return errorMessages[code] || "Lo siento, ocurrió un error al procesar tu consulta. Intenta con otra pregunta.";
+    },
+    
+    /**
+     * Devuelve una respuesta predeterminada aleatoria
+     */
+    getRandomFallback: function() {
+        try {
+            if (!window.chatbotData || !window.chatbotData.fallback || 
+                !Array.isArray(window.chatbotData.fallback) || 
+                window.chatbotData.fallback.length === 0) {
+                return "Lo siento, no puedo entender tu consulta en este momento.";
+            }
+            
+            const randomIndex = Math.floor(Math.random() * window.chatbotData.fallback.length);
+            return window.chatbotData.fallback[randomIndex] || window.chatbotData.fallback[0];
+        } catch (error) {
+            console.error("Error al obtener respuesta predeterminada:", error);
+            return "Lo siento, no puedo entender tu consulta en este momento.";
+        }
     },
     
     /**
@@ -72,10 +229,13 @@ const ChatbotLogic = {
     isSearchQuery: function(message) {
         const searchPatterns = [
             'buscar ', 'busca ', 'encuentra ', 'buscame ',
-            'donde esta', 'dónde está', 'mostrar '
+            'donde esta', 'dónde está', 'mostrar ', 
+            // Patrones más específicos que coinciden con lo que escriben los usuarios
+            'busca ejercicios', 'buscar ejercicios', 'encuentra ejercicios'
         ];
         
-        return searchPatterns.some(pattern => message.includes(pattern));
+        const lcMessage = message.toLowerCase().trim();
+        return searchPatterns.some(pattern => lcMessage.includes(pattern) || lcMessage.startsWith(pattern));
     },
     
     /**
@@ -85,17 +245,25 @@ const ChatbotLogic = {
      */
     handleSearchQuery: function(message) {
         // Extraer término de búsqueda
-        let searchTerm = message
-            .replace('buscar ', '')
-            .replace('busca ', '')
-            .replace('encuentra ', '')
-            .replace('buscame ', '')
-            .replace('donde esta ', '')
-            .replace('dónde está ', '')
-            .replace('mostrar ', '')
-            .replace('ejercicios de ', '')
-            .replace('ejercicios sobre ', '')
+        let searchTerm = message.toLowerCase().trim()
+            .replace(/^buscar?\s+/i, '')
+            .replace(/^busca\s+/i, '')
+            .replace(/^encuentra\s+/i, '')
+            .replace(/^buscame\s+/i, '')
+            .replace(/^donde\s+esta\s+/i, '')
+            .replace(/^dónde\s+está\s+/i, '')
+            .replace(/^mostrar\s+/i, '')
+            .replace(/ejercicios\s+de\s+/i, '')
+            .replace(/ejercicios\s+sobre\s+/i, '')
+            .replace(/ejercicios\s+/i, '')
             .trim();
+        
+        console.log("[BÚSQUEDA] Término de búsqueda extraído:", searchTerm);
+        
+        // Verificar que hay un término válido
+        if (!searchTerm || searchTerm.length < 2) {
+            return "Por favor, especifica qué quieres buscar con más detalle.";
+        }
         
         // Si hay una función de búsqueda global, utilizarla
         if (typeof window.performSearch === 'function') {
@@ -104,37 +272,138 @@ const ChatbotLogic = {
             if (searchInput) {
                 searchInput.value = searchTerm;
                 
-                // Configurar listener para recibir resultados
-                const handleSearchResults = (event) => {
-                    if (event.detail && event.detail.type === 'searchCompleted') {
-                        // Recibimos resultados, actualizar mensaje para indicar que se completó
-                        // y que los resultados están en el modal.
-                        const results = event.detail.results;
-                        if (results && results.count > 0) {
-                            window.ChatbotUI.replaceLastBotMessage(
-                                `Búsqueda completada para "${searchTerm}". Revisa los resultados en la ventana emergente.`
-                            );
-                        } else {
-                            window.ChatbotUI.replaceLastBotMessage(
-                                `No encontré resultados para "${searchTerm}" en la búsqueda. Intenta con otros términos.`
-                            );
-                        }
-                        
-                        // Eliminar listener
-                        document.removeEventListener('searchResult', handleSearchResults);
-                    }
-                };
-                
-                // Registrar listener para recibir resultados
-                document.addEventListener('searchResult', handleSearchResults);
-                
                 // Ejecutar búsqueda
                 window.performSearch();
-                return `Buscando "${searchTerm}"... Los resultados aparecerán en una ventana emergente.`;
+                console.log("[BÚSQUEDA] Búsqueda ejecutada para:", searchTerm);
+                return `Buscando "${searchTerm}"... Revisa los resultados en la ventana de búsqueda.`;
             }
         }
         
         return `Lo siento, no puedo realizar la búsqueda de "${searchTerm}" en este momento.`;
+    },
+    
+    /**
+     * Preprocesa el mensaje para mejorar las coincidencias
+     * @param {string} message - Mensaje del usuario en minúsculas
+     * @return {string} Mensaje preprocesado
+     */
+    preprocessMessage: function(message) {
+        try {
+            if (!message || typeof message !== 'string') {
+                console.error("Mensaje inválido para preprocesar:", message);
+                return "";
+            }
+            
+            // Eliminar palabras comunes, artículos y optimizar palabras clave
+            let processed = message
+                .replace(/dame un|dame una|dame|muestra|muéstrame|enseñame|enseñar|ver|quiero ver/g, '')
+                .replace(/ejemplo de|ejemplos de|un ejemplo de|ejemplos sobre|ejemplo|ejemplos/g, 'ejemplo')
+                .replace(/código de|código en|código para|código/g, 'codigo')
+                .trim();
+            
+            // Si el mensaje se vuelve vacío después del preprocesamiento, devolver al menos parte del original
+            if (!processed && message) {
+                const words = message.split(' ');
+                return words[words.length - 1] || message; // Último término o mensaje original
+            }
+            
+            return processed;
+        } catch (error) {
+            console.error("Error en preprocessMessage:", error);
+            return message; // Devolver mensaje original en caso de error
+        }
+    },
+    
+    /**
+     * Calcula la puntuación de coincidencia
+     * @param {string} message - Mensaje preprocesado
+     * @param {array} keywords - Palabras clave a buscar
+     * @return {number} Puntuación entre 0 y 1
+     */
+    calculateMatchScore: function(message, keywords) {
+        try {
+            if (!message || !keywords || !Array.isArray(keywords)) {
+                return 0;
+            }
+
+            let totalScore = 0;
+            let bestKeywordScore = 0;
+            
+            for (const keyword of keywords) {
+                let currentKeywordScore = 0;
+                
+                // Si el mensaje está vacío o el keyword está vacío, continuar
+                if (!message.trim() || !keyword.trim()) {
+                    continue;
+                }
+                
+                // Coincidencia exacta (prioridad alta)
+                if (message === keyword) {
+                    currentKeywordScore = 1.0; // Coincidencia perfecta
+                    console.log(`Coincidencia exacta: "${message}" con "${keyword}"`);
+                }
+                // Coincidencia de frase completa (prioridad alta)
+                else if (message.includes(keyword)) {
+                    // Longitud relativa para favorecer coincidencias más largas
+                    currentKeywordScore = 0.7 + (0.3 * (keyword.length / Math.max(keyword.length, message.length)));
+                    console.log(`Coincidencia de frase: "${message}" incluye "${keyword}" (score: ${currentKeywordScore})`);
+                } 
+                // Coincidencia inversa (cuando el keyword contiene el mensaje completo)
+                else if (keyword.includes(message)) {
+                    currentKeywordScore = 0.6; // Buen match pero no perfecto
+                    console.log(`Coincidencia inversa: "${keyword}" incluye "${message}" (score: ${currentKeywordScore})`);
+                }
+                // Coincidencia parcial de palabras (prioridad media)
+                else {
+                    const keywordWords = keyword.split(' ');
+                    const messageWords = message.split(' ');
+                    
+                    let matchedWords = 0;
+                    let importantWordMatches = 0;
+                    
+                    for (const keywordWord of keywordWords) {
+                        // Ignorar palabras muy cortas
+                        if (keywordWord.length <= 2) continue;
+                        
+                        // Buscar palabra completa en el mensaje
+                        if (messageWords.some(word => word === keywordWord)) {
+                            matchedWords++;
+                            
+                            // Palabras más largas son generalmente más importantes
+                            if (keywordWord.length > 4) {
+                                importantWordMatches++;
+                            }
+                        }
+                    }
+                    
+                    if (matchedWords > 0) {
+                        // Base score por palabras coincidentes
+                        const wordMatchRatio = matchedWords / keywordWords.length;
+                        const importantBonus = 0.1 * importantWordMatches;
+                        currentKeywordScore = 0.4 * wordMatchRatio + importantBonus;
+                        console.log(`Coincidencia parcial: ${matchedWords}/${keywordWords.length} palabras en "${keyword}" (score: ${currentKeywordScore})`);
+                    }
+                }
+                
+                // Actualizar mejor puntuación de palabra clave
+                if (currentKeywordScore > bestKeywordScore) {
+                    bestKeywordScore = currentKeywordScore;
+                }
+                
+                // Acumular puntuación para todas las palabras clave
+                totalScore += currentKeywordScore;
+            }
+            
+            // La puntuación final es una combinación ponderada de
+            // la mejor coincidencia individual y la puntuación total
+            const weightedScore = (bestKeywordScore * 0.7) + (Math.min(totalScore / keywords.length, 1) * 0.3);
+            
+            console.log("Puntuación final calculada:", weightedScore, "para keywords:", keywords);
+            return weightedScore;
+        } catch (error) {
+            console.error("Error en calculateMatchScore:", error);
+            return 0;
+        }
     },
     
     /**
@@ -201,73 +470,67 @@ const ChatbotLogic = {
      * @param {string} sender - 'user' o 'bot'
      */
     saveToHistory: function(text, sender) {
-        this.chatHistory.push({
-            text: text,
-            sender: sender,
-            timestamp: new Date().toISOString()
-        });
-        
-        // Limitar el tamaño del historial
-        const maxHistory = window.chatbotData?.ui?.messageHistoryMax || 50;
-        if (this.chatHistory.length > maxHistory) {
-            this.chatHistory = this.chatHistory.slice(-maxHistory);
+        try {
+            // Asegurarse de que this.chatHistory siempre esté inicializado
+            if (!this.chatHistory) {
+                console.warn("Chat history no inicializado, creando nuevo array");
+                this.chatHistory = [];
+            }
+            
+            this.chatHistory.push({
+                text: text,
+                sender: sender,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Limitar el tamaño del historial
+            const maxHistory = window.chatbotData?.ui?.messageHistoryMax || 50;
+            if (this.chatHistory.length > maxHistory) {
+                this.chatHistory = this.chatHistory.slice(-maxHistory);
+            }
+            
+            // Guardar en localStorage
+            localStorage.setItem('chatHistory', JSON.stringify(this.chatHistory));
+            
+            if this.debugMode) {
+                console.log("[DEBUG] Mensaje guardado en historial:", text);
+                console.log("[DEBUG] Historial actual:", this.chatHistory);
+            }
+        } catch (error) {
+            console.error("Error al guardar en el historial:", error);
         }
-        
-        // Guardar en localStorage
-        localStorage.setItem('chatHistory', JSON.stringify(this.chatHistory));
     },
     
     /**
      * Carga el historial de chat desde localStorage
+     * @return {Array} Historial de chat
      */
     loadChatHistory: function() {
         try {
             const history = localStorage.getItem('chatHistory');
-            return history ? JSON.parse(history) : [];
+            if (history) {
+                return JSON.parse(history);
+            }
         } catch (error) {
-            console.error("Error al cargar historial:", error);
-            return [];
+            console.error("Error al cargar el historial de chat:", error);
         }
+        
+        return [];
     },
     
     /**
      * Limpia el historial de chat
      */
     clearChatHistory: function() {
-        this.chatHistory = [];
-        localStorage.removeItem('chatHistory');
-    },
-    
-    /**
-     * Exporta el historial de chat como un archivo de texto
-     */
-    exportChatHistory: function() {
-        if (this.chatHistory.length === 0) {
-            return false;
+        try {
+            this.chatHistory = [];
+            localStorage.removeItem('chatHistory');
+            console.log("Historial de chat limpiado");
+        } catch (error) {
+            console.error("Error al limpiar el historial de chat:", error);
         }
-        
-        let exportText = "# Historial del Chatbot\n\n";
-        
-        this.chatHistory.forEach(message => {
-            const date = new Date(message.timestamp).toLocaleString();
-            const sender = message.sender === 'user' ? 'Usuario' : 'Chatbot';
-            exportText += `## ${sender} (${date})\n\n${message.text}\n\n`;
-        });
-        
-        const blob = new Blob([exportText], { type: 'text/plain' });
-        const url = URL.createObjectURL(blob);
-        
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'chatbot-historial.txt';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        
-        return true;
     }
 };
 
-// Exportar el objeto para uso en otros scripts
-window.ChatbotLogic = ChatbotLogic;
+// Registrar explícitamente en la consola que el objeto ha sido creado
+console.log("ChatbotLogic cargado correctamente:", !!window.ChatbotLogic);
